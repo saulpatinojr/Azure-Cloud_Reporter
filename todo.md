@@ -25,21 +25,21 @@
 - [x] Port Dashboard layout and navigation
 - [x] Create Home/Landing page with Google Sign-in
 - [x] Implement Firebase Authentication UI
-- [ ] Port Client management pages
+- [x] Port Client management pages
 - [ ] Port Assessment creation and detail pages
 - [ ] Port File upload interface
 - [ ] Port Assessment generation pages
 - [ ] Port Results and presentation pages
 
 ## Phase 4: Firestore Data Layer
-- [ ] Design Firestore collections structure
-- [ ] Implement clients collection CRUD
-- [ ] Implement assessments collection CRUD
-- [ ] Implement assessmentTypes collection
-- [ ] Implement requiredFiles collection
-- [ ] Implement uploadedFiles collection
+- [x] Design Firestore collections structure
+- [x] Implement clients collection CRUD
+- [x] Implement assessments collection CRUD
+- [x] Implement assessmentTypes collection
+- [x] Implement requiredFiles collection
+- [x] Implement uploadedFiles collection
 - [ ] Implement assessmentSections collection
-- [ ] Implement promptBank collection
+- [x] Implement promptBank collection
 
 ## Phase 5: File Upload with Firebase Storage
 - [ ] Implement file upload to Firebase Storage

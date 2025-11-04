@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
+import Clients from './pages/Clients';
+import ClientForm from './pages/ClientForm';
 
 // Protected Route wrapper
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -31,6 +33,30 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/clients"
+        element={
+          <ProtectedRoute>
+            <Clients />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/clients/new"
+        element={
+          <ProtectedRoute>
+            <ClientForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/clients/:id/edit"
+        element={
+          <ProtectedRoute>
+            <ClientForm />
           </ProtectedRoute>
         }
       />
