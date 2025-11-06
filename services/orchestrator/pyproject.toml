@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "ai-orchestrator"
+version = "0.1.0"
+description = "AI orchestration service for Cloud Reporter"
+authors = ["Cloud Reporter Team"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115"
+uvicorn = { extras = ["standard"], version = "^0.32" }
+pydantic = { version = "^2.9", extras = ["dotenv"] }
+python-dotenv = "^1.0"
+httpx = "^0.27"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

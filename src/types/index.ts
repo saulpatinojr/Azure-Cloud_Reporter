@@ -96,6 +96,47 @@ export interface MCPServer {
   createdAt: Timestamp;
 }
 
+export interface TemplateVariable {
+  key: string;
+  label: string;
+  description?: string;
+  sampleValue?: string;
+  required?: boolean;
+  source?: 'ingestion' | 'manual' | 'ai';
+}
+
+export interface TemplateSection {
+  id: string;
+  title: string;
+  description?: string;
+  prompt: string;
+  variables: TemplateVariable[];
+  visualization?: 'table' | 'chart' | 'text';
+  order: number;
+}
+
+export interface Template {
+  id: string;
+  name: string;
+  category: string;
+  version: string;
+  status: 'draft' | 'published';
+  updatedAt: Timestamp;
+  tags: string[];
+  sections: TemplateSection[];
+}
+
+export interface TemplateSummary {
+  id: string;
+  name: string;
+  category: string;
+  version: string;
+  status: 'draft' | 'published';
+  updatedAt: Timestamp;
+  tags: string[];
+  sectionsCount: number;
+}
+
 // Form types for creating/updating
 export type CreateClientInput = Omit<Client, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 export type UpdateClientInput = Partial<CreateClientInput>;

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { createClient, updateClient, getClientById } from '../services/clientService';
-import { ArrowLeft, Save } from 'lucide-react';
+import { AppShell } from '../components/layout/AppShell';
+import { Button, Card, CardHeader } from '../design-system';
+import { Save } from 'lucide-react';
 
 export default function ClientForm() {
   const { user } = useAuth();
@@ -70,128 +72,116 @@ export default function ClientForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <button
-            onClick={() => navigate('/clients')}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
+    <AppShell
+      title={isEditing ? 'Edit client' : 'New client'}
+      subtitle={
+        isEditing
+          ? 'Update key details, contacts, and industry context for this organization.'
+          : 'Capture organization context to unlock tailored assessment playbooks.'
+      }
+      actions={
+        <Button variant="secondary" onClick={() => navigate('/clients')}>
+          Cancel
+        </Button>
+      }
+      userEmail={user?.email ?? null}
+    >
+      <Card padding="lg" className="max-w-3xl">
+        <CardHeader
+          title="Organization details"
+          subtitle="These fields help the AI tailoring engine recommend benchmarks and playbooks."
+        />
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">
-              {isEditing ? 'Edit Client' : 'New Client'}
-            </h1>
-            <p className="text-gray-600 mt-1">
-              {isEditing ? 'Update client information' : 'Add a new client organization'}
+            <label htmlFor="name" className="block text-sm font-semibold text-slate-700">
+              Client name <span className="text-rose-500">*</span>
+            </label>
+            <p className="text-xs text-slate-500 mt-1">
+              Used in reports, communications, and secure portals.
             </p>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              value={formData.name}
+              onChange={handleChange}
+              className="mt-2 h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-100"
+              placeholder="e.g., Acme Corporation"
+            />
           </div>
-        </div>
 
-        {/* Form */}
-        <div className="max-w-2xl">
-          <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-sm border p-6">
-            <div className="space-y-6">
-              {/* Name */}
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                  Client Name <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  value={formData.name}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="e.g., Acme Corporation"
-                />
-              </div>
+          <div>
+            <label htmlFor="contactEmail" className="block text-sm font-semibold text-slate-700">
+              Primary contact email <span className="text-rose-500">*</span>
+            </label>
+            <p className="text-xs text-slate-500 mt-1">Used for notifications, approvals, and client portal access.</p>
+            <input
+              type="email"
+              id="contactEmail"
+              name="contactEmail"
+              required
+              value={formData.contactEmail}
+              onChange={handleChange}
+              className="mt-2 h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-100"
+              placeholder="contact@example.com"
+            />
+          </div>
 
-              {/* Contact Email */}
-              <div>
-                <label htmlFor="contactEmail" className="block text-sm font-medium text-gray-700 mb-2">
-                  Contact Email <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="contactEmail"
-                  name="contactEmail"
-                  required
-                  value={formData.contactEmail}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="contact@example.com"
-                />
-              </div>
+          <div>
+            <label htmlFor="industry" className="block text-sm font-semibold text-slate-700">
+              Industry <span className="text-rose-500">*</span>
+            </label>
+            <p className="text-xs text-slate-500 mt-1">Helps recommend the right compliance templates and benchmarks.</p>
+            <input
+              type="text"
+              id="industry"
+              name="industry"
+              required
+              value={formData.industry}
+              onChange={handleChange}
+              className="mt-2 h-12 w-full rounded-xl border border-slate-200 px-4 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-100"
+              placeholder="Technology, Healthcare, Finance…"
+            />
+          </div>
 
-              {/* Industry */}
-              <div>
-                <label htmlFor="industry" className="block text-sm font-medium text-gray-700 mb-2">
-                  Industry <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="industry"
-                  name="industry"
-                  required
-                  value={formData.industry}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="e.g., Technology, Healthcare, Finance"
-                />
-              </div>
+          <div>
+            <label htmlFor="description" className="block text-sm font-semibold text-slate-700">
+              Organization notes
+            </label>
+            <p className="text-xs text-slate-500 mt-1">Optional narrative or context for your delivery team.</p>
+            <textarea
+              id="description"
+              name="description"
+              rows={4}
+              value={formData.description}
+              onChange={handleChange}
+              className="mt-2 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-primary focus:ring-4 focus:ring-indigo-100"
+              placeholder="Share nuances about teams, regions, or transformation goals."
+            />
+          </div>
 
-              {/* Description */}
-              <div>
-                <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  name="description"
-                  rows={4}
-                  value={formData.description}
-                  onChange={handleChange}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  placeholder="Brief description of the client organization..."
-                />
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-3 mt-8 pt-6 border-t">
-              <button
-                type="button"
-                onClick={() => navigate('/clients')}
-                className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="flex items-center gap-2 px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
-              >
-                {loading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Saving...
-                  </>
-                ) : (
-                  <>
-                    <Save className="w-4 h-4" />
-                    {isEditing ? 'Update Client' : 'Create Client'}
-                  </>
-                )}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
+          <div className="flex items-center justify-end gap-3 border-t border-slate-200 pt-6">
+            <Button
+              type="submit"
+              disabled={loading}
+              className="inline-flex items-center"
+            >
+              {loading ? (
+                <span className="inline-flex items-center gap-2 text-sm">
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-white" />
+                  Saving…
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2 text-sm">
+                  <Save className="h-4 w-4" />
+                  {isEditing ? 'Update client' : 'Create client'}
+                </span>
+              )}
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </AppShell>
   );
 }

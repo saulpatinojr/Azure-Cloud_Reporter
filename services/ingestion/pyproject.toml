@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "ingestion-service"
+version = "0.1.0"
+description = "Cloud Run ingestion API for Cloud Reporter"
+authors = ["Cloud Reporter Team"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.115"
+uvicorn = { extras = ["standard"], version = "^0.32" }
+python-multipart = "^0.0.9"
+pydantic = { version = "^2.9", extras = ["dotenv"] }
+google-cloud-firestore = "^2.16"
+google-cloud-storage = "^2.18"
+google-cloud-pubsub = "^2.21"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3"
+httpx = "^0.27"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

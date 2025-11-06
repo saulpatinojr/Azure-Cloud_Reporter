@@ -67,7 +67,7 @@ export default function Home() {
           </div>
 
           {/* CTA */}
-          <div className="bg-white p-8 rounded-xl shadow-lg">
+          <div className="bg-white p-8 rounded-xl shadow-lg space-y-4">
             <h2 className="text-2xl font-bold mb-4">Get Started</h2>
             <p className="text-gray-600 mb-6">
               Sign in with your Google account to start creating cloud assessments
@@ -96,6 +96,14 @@ export default function Home() {
               </svg>
               Sign in with Google
             </button>
+            <div>
+              <button
+                onClick={() => navigate('/backoffice')}
+                className="mt-2 inline-flex items-center gap-2 border border-gray-300 px-6 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+              >
+                Try BackOffice (no sign-in)
+              </button>
+            </div>
           </div>
 
           {/* Footer */}
