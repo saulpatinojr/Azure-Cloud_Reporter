@@ -1,4 +1,6 @@
-import { ApiRoutes, http, safeApiCall } from './index';
+import { ApiRoutes, http } from './http';
+import { safeApiCall } from './index';
+import type { ApiResult } from './index';
 
 type ValidationResult = {
   status: 'valid' | 'warning' | 'error';
@@ -13,7 +15,7 @@ type UploadJob = {
 
 const hasApiBase = Boolean(import.meta.env.VITE_API_BASE_URL);
 
-export async function validateUpload(file: File) {
+export async function validateUpload(file: File): Promise<ApiResult<ValidationResult>> {
   if (!hasApiBase) {
     return mockValidate(file);
   }
@@ -25,13 +27,12 @@ export async function validateUpload(file: File) {
     http<ValidationResult>(ApiRoutes.ingest.validateCsv, {
       method: 'POST',
       body: payload,
-      headers: { 'Content-Type': undefined as unknown as string },
       parseJson: true,
     }),
   );
 }
 
-export async function submitUpload(file: File) {
+export async function submitUpload(file: File): Promise<ApiResult<UploadJob>> {
   if (!hasApiBase) {
     return mockUpload(file);
   }
@@ -43,12 +44,11 @@ export async function submitUpload(file: File) {
     http<UploadJob>(ApiRoutes.ingest.upload, {
       method: 'POST',
       body: payload,
-      headers: { 'Content-Type': undefined as unknown as string },
     }),
   );
 }
 
-async function mockValidate(file: File) {
+async function mockValidate(file: File): Promise<ApiResult<ValidationResult>> {
   const extension = file.name.split('.').pop()?.toLowerCase();
   let status: ValidationResult['status'] = 'valid';
   let message = 'Ready for ingestion.';
@@ -70,7 +70,7 @@ async function mockValidate(file: File) {
   };
 }
 
-async function mockUpload(file: File) {
+async function mockUpload(_file: File): Promise<ApiResult<UploadJob>> {
   const job: UploadJob = {
     jobId: `mock-${Date.now()}`,
     status: 'queued',

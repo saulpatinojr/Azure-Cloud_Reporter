@@ -7,7 +7,7 @@ import {
   where,
   orderBy,
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getDb } from '../lib/firebase';
 import type { AssessmentType, RequiredFile, PromptBank } from '../types';
 
 const ASSESSMENT_TYPES_COLLECTION = 'assessmentTypes';
@@ -18,7 +18,7 @@ const PROMPT_BANK_COLLECTION = 'promptBank';
  * Get all assessment types
  */
 export async function getAssessmentTypes(): Promise<AssessmentType[]> {
-  const snapshot = await getDocs(collection(db, ASSESSMENT_TYPES_COLLECTION));
+  const snapshot = await getDocs(collection(getDb(), ASSESSMENT_TYPES_COLLECTION));
   return snapshot.docs.map(doc => ({
     id: doc.id,
     ...doc.data(),
@@ -29,7 +29,7 @@ export async function getAssessmentTypes(): Promise<AssessmentType[]> {
  * Get a single assessment type by ID
  */
 export async function getAssessmentTypeById(typeId: string): Promise<AssessmentType | null> {
-  const docRef = doc(db, ASSESSMENT_TYPES_COLLECTION, typeId);
+  const docRef = doc(getDb(), ASSESSMENT_TYPES_COLLECTION, typeId);
   const docSnap = await getDoc(docRef);
   
   if (!docSnap.exists()) {
@@ -47,7 +47,7 @@ export async function getAssessmentTypeById(typeId: string): Promise<AssessmentT
  */
 export async function getRequiredFiles(assessmentTypeId: string): Promise<RequiredFile[]> {
   const q = query(
-    collection(db, REQUIRED_FILES_COLLECTION),
+    collection(getDb(), REQUIRED_FILES_COLLECTION),
     where('assessmentTypeId', '==', assessmentTypeId),
     orderBy('fileOrder', 'asc')
   );
@@ -64,7 +64,7 @@ export async function getRequiredFiles(assessmentTypeId: string): Promise<Requir
  */
 export async function getPromptBank(assessmentTypeId: string): Promise<PromptBank[]> {
   const q = query(
-    collection(db, PROMPT_BANK_COLLECTION),
+    collection(getDb(), PROMPT_BANK_COLLECTION),
     where('assessmentTypeId', '==', assessmentTypeId),
     orderBy('sectionOrder', 'asc')
   );

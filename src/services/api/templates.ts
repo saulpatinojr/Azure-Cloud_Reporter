@@ -1,4 +1,5 @@
-import { createHttpClient, ApiRoutes, safeApiCall } from './http';
+import { createHttpClient, ApiRoutes } from './http';
+import { safeApiCall } from './index';
 import {
   listTemplates as localListTemplates,
   getTemplateById as localGetTemplateById,
@@ -17,7 +18,7 @@ export async function fetchTemplates() {
       data: await localListTemplates(),
     };
   }
-  return safeApiCall<TemplateSummary[]>(() => templateHttp(ApiRoutes.templates.list));
+  return safeApiCall<TemplateSummary[]>(() => templateHttp<TemplateSummary[]>(ApiRoutes.templates.list));
 }
 
 export async function fetchTemplate(templateId: string) {
@@ -27,7 +28,7 @@ export async function fetchTemplate(templateId: string) {
       data: await localGetTemplateById(templateId),
     };
   }
-  return safeApiCall<Template>(() => templateHttp(ApiRoutes.templates.detail(templateId)));
+  return safeApiCall<Template>(() => templateHttp<Template>(ApiRoutes.templates.detail(templateId)));
 }
 
 export async function saveTemplateSection(templateId: string, section: TemplateSection) {
@@ -36,7 +37,7 @@ export async function saveTemplateSection(templateId: string, section: TemplateS
     return { ok: true as const };
   }
   return safeApiCall(() =>
-    templateHttp(ApiRoutes.templates.updateSection(templateId, section.id), {
+    templateHttp<void>(ApiRoutes.templates.updateSection(templateId, section.id), {
       method: 'PUT',
       body: section,
     }),

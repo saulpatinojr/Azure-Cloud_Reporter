@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { getAssessments, getDashboardStats } from '../services/assessmentService';
 import { getClients } from '../services/clientService';
 import type { Assessment, Client } from '../types';
-import { formatDate, cn } from '../utils/helpers';
+import { formatDate } from '../utils/helpers';
 import { AppShell } from '../components/layout/AppShell';
 import { Button, Card, CardHeader, Badge, Progress } from '../design-system';
 import { Calendar, UploadCloud, BarChart3, Sparkles, ArrowUpRight } from 'lucide-react';

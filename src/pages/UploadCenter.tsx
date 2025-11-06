@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { AppShell } from '../components/layout/AppShell';
-import { Badge, Button, Card, CardHeader, Progress } from '../design-system';
+import { Badge, Button, Card, CardHeader } from '../design-system';
 import { validateUpload, submitUpload } from '../services/api/ingestion';
 import { cn } from '../utils/helpers';
 import { UploadCloud, CheckCircle2, AlertTriangle, XCircle, Loader2 } from 'lucide-react';
@@ -38,7 +38,7 @@ export default function UploadCenter() {
           prev.map((item) => {
             if (item.id !== entry.id) return item;
             if (!result.ok) {
-              return { ...item, status: 'error', message: result.error };
+              return { ...item, status: 'error', message: result.error ?? 'Validation failed' };
             }
             const status = result.data?.status === 'error' ? 'error' : 'ready';
             return {
@@ -62,7 +62,7 @@ export default function UploadCenter() {
       prev.map((item) => {
         if (item.id !== entry.id) return item;
         if (!result.ok) {
-          return { ...item, status: 'error', message: result.error };
+          return { ...item, status: 'error', message: result.error ?? 'Upload failed' };
         }
         return { ...item, status: 'completed', message: 'Queued for ingestion' };
       }),

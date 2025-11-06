@@ -11,7 +11,7 @@ import {
   orderBy,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getDb } from '../lib/firebase';
 import type { Client, CreateClientInput, UpdateClientInput } from '../types';
 
 const COLLECTION_NAME = 'clients';
@@ -21,7 +21,7 @@ const COLLECTION_NAME = 'clients';
  */
 export async function getClients(userId: string): Promise<Client[]> {
   const q = query(
-    collection(db, COLLECTION_NAME),
+    collection(getDb(), COLLECTION_NAME),
     where('createdBy', '==', userId),
     orderBy('createdAt', 'desc')
   );
@@ -37,7 +37,7 @@ export async function getClients(userId: string): Promise<Client[]> {
  * Get a single client by ID
  */
 export async function getClientById(clientId: string): Promise<Client | null> {
-  const docRef = doc(db, COLLECTION_NAME, clientId);
+  const docRef = doc(getDb(), COLLECTION_NAME, clientId);
   const docSnap = await getDoc(docRef);
   
   if (!docSnap.exists()) {
@@ -57,7 +57,7 @@ export async function createClient(
   input: CreateClientInput,
   userId: string
 ): Promise<string> {
-  const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+  const docRef = await addDoc(collection(getDb(), COLLECTION_NAME), {
     ...input,
     createdBy: userId,
     createdAt: serverTimestamp(),
@@ -74,7 +74,7 @@ export async function updateClient(
   clientId: string,
   input: UpdateClientInput
 ): Promise<void> {
-  const docRef = doc(db, COLLECTION_NAME, clientId);
+  const docRef = doc(getDb(), COLLECTION_NAME, clientId);
   await updateDoc(docRef, {
     ...input,
     updatedAt: serverTimestamp(),
@@ -85,7 +85,7 @@ export async function updateClient(
  * Delete a client
  */
 export async function deleteClient(clientId: string): Promise<void> {
-  const docRef = doc(db, COLLECTION_NAME, clientId);
+  const docRef = doc(getDb(), COLLECTION_NAME, clientId);
   await deleteDoc(docRef);
 }
 
@@ -97,7 +97,7 @@ export async function searchClients(
   searchTerm: string
 ): Promise<Client[]> {
   const q = query(
-    collection(db, COLLECTION_NAME),
+    collection(getDb(), COLLECTION_NAME),
     where('createdBy', '==', userId),
     orderBy('name')
   );

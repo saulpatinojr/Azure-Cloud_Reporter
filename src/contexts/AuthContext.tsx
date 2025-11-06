@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
 } from 'firebase/auth';
-import { auth } from '../lib/firebase';
+import { getAuthSafe } from '../lib/firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -22,18 +22,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
+    let mounted = true;
+    try {
+      const authInstance = getAuthSafe();
+      const unsubscribe = onAuthStateChanged(authInstance, (user) => {
+        if (!mounted) return;
+        setUser(user);
+        setLoading(false);
+      });
+      return () => {
+        mounted = false;
+        unsubscribe();
+      };
+    } catch (err) {
+      console.warn('Auth not initialized', err);
       setLoading(false);
-    });
-
-    return unsubscribe;
+    }
   }, []);
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
+      const authInstance = getAuthSafe();
+      await signInWithPopup(authInstance, provider);
     } catch (error) {
       console.error('Error signing in with Google:', error);
       throw error;
@@ -42,7 +53,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signOut = async () => {
     try {
-      await firebaseSignOut(auth);
+      const authInstance = getAuthSafe();
+      await firebaseSignOut(authInstance);
     } catch (error) {
       console.error('Error signing out:', error);
       throw error;

@@ -5,7 +5,7 @@ import {
   getDownloadURL,
   deleteObject,
 } from 'firebase/storage';
-import { storage } from '../lib/firebase';
+import { getStorage } from '../lib/firebase';
 
 /**
  * Upload a file to Firebase Storage
@@ -15,7 +15,7 @@ export async function uploadFile(
   path: string,
   metadata?: UploadMetadata
 ): Promise<{ url: string; path: string }> {
-  const storageRef = ref(storage, path);
+  const storageRef = ref(getStorage(), path);
   
   const uploadMetadata: UploadMetadata = {
     contentType: file.type,
@@ -55,7 +55,7 @@ export async function uploadAssessmentExport(
   const timestamp = Date.now();
   const path = `assessments/${assessmentId}/exports/${timestamp}_${fileName}`;
   
-  const storageRef = ref(storage, path);
+  const storageRef = ref(getStorage(), path);
   await uploadBytes(storageRef, file, { contentType });
   const url = await getDownloadURL(storageRef);
   
@@ -66,7 +66,7 @@ export async function uploadAssessmentExport(
  * Delete a file from Firebase Storage
  */
 export async function deleteFile(path: string): Promise<void> {
-  const storageRef = ref(storage, path);
+  const storageRef = ref(getStorage(), path);
   await deleteObject(storageRef);
 }
 
@@ -74,7 +74,7 @@ export async function deleteFile(path: string): Promise<void> {
  * Get download URL for a file
  */
 export async function getFileUrl(path: string): Promise<string> {
-  const storageRef = ref(storage, path);
+  const storageRef = ref(getStorage(), path);
   return getDownloadURL(storageRef);
 }
 

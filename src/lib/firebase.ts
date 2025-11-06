@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
+import { getStorage as firebaseGetStorage } from 'firebase/storage';
 
 function hasFirebaseConfig() {
   return Boolean(
@@ -11,10 +11,10 @@ function hasFirebaseConfig() {
   );
 }
 
-let app: ReturnType<typeof initializeApp> | null = null;
-let auth: ReturnType<typeof getAuth> | null = null;
-let db: ReturnType<typeof getFirestore> | null = null;
-let storage: ReturnType<typeof getStorage> | null = null;
+let _app: ReturnType<typeof initializeApp> | null = null;
+let _auth: ReturnType<typeof getAuth> | null = null;
+let _db: ReturnType<typeof getFirestore> | null = null;
+let _storage: ReturnType<typeof firebaseGetStorage> | null = null;
 
 if (hasFirebaseConfig()) {
   const firebaseConfig = {
@@ -26,16 +26,34 @@ if (hasFirebaseConfig()) {
     appId: import.meta.env.VITE_FIREBASE_APP_ID,
   };
 
-  app = initializeApp(firebaseConfig);
-  auth = getAuth(app);
-  db = getFirestore(app);
-  storage = getStorage(app);
+  _app = initializeApp(firebaseConfig);
+  _auth = getAuth(_app);
+  _db = getFirestore(_app);
+  _storage = firebaseGetStorage(_app);
 } else {
   console.warn(
     'Firebase environment variables are not fully set. Firebase services will not be initialized.',
   );
 }
 
-export { auth, db, storage };
+export function getApp() {
+  if (!_app) throw new Error('Firebase app not initialized. Set VITE_FIREBASE_* env vars.');
+  return _app;
+}
 
-export default app;
+export function getAuthSafe() {
+  if (!_auth) throw new Error('Firebase auth not initialized.');
+  return _auth;
+}
+
+export function getDb() {
+  if (!_db) throw new Error('Firestore not initialized.');
+  return _db;
+}
+
+export function getStorage() {
+  if (!_storage) throw new Error('Storage not initialized.');
+  return _storage;
+}
+
+export default _app;

@@ -11,7 +11,7 @@ import {
   orderBy,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../lib/firebase';
+import { getDb } from '../lib/firebase';
 import type { Assessment, CreateAssessmentInput, UpdateAssessmentInput } from '../types';
 
 const COLLECTION_NAME = 'assessments';
@@ -21,7 +21,7 @@ const COLLECTION_NAME = 'assessments';
  */
 export async function getAssessments(userId: string): Promise<Assessment[]> {
   const q = query(
-    collection(db, COLLECTION_NAME),
+    collection(getDb(), COLLECTION_NAME),
     where('createdBy', '==', userId),
     orderBy('createdAt', 'desc')
   );
@@ -41,7 +41,7 @@ export async function getAssessmentsByClient(
   userId: string
 ): Promise<Assessment[]> {
   const q = query(
-    collection(db, COLLECTION_NAME),
+    collection(getDb(), COLLECTION_NAME),
     where('clientId', '==', clientId),
     where('createdBy', '==', userId),
     orderBy('createdAt', 'desc')
@@ -58,7 +58,7 @@ export async function getAssessmentsByClient(
  * Get a single assessment by ID
  */
 export async function getAssessmentById(assessmentId: string): Promise<Assessment | null> {
-  const docRef = doc(db, COLLECTION_NAME, assessmentId);
+  const docRef = doc(getDb(), COLLECTION_NAME, assessmentId);
   const docSnap = await getDoc(docRef);
   
   if (!docSnap.exists()) {
@@ -78,7 +78,7 @@ export async function createAssessment(
   input: CreateAssessmentInput,
   userId: string
 ): Promise<string> {
-  const docRef = await addDoc(collection(db, COLLECTION_NAME), {
+  const docRef = await addDoc(collection(getDb(), COLLECTION_NAME), {
     ...input,
     status: 'draft',
     readinessPercentage: 0,
@@ -97,7 +97,7 @@ export async function updateAssessment(
   assessmentId: string,
   input: UpdateAssessmentInput | { status?: Assessment['status']; readinessPercentage?: number }
 ): Promise<void> {
-  const docRef = doc(db, COLLECTION_NAME, assessmentId);
+  const docRef = doc(getDb(), COLLECTION_NAME, assessmentId);
   await updateDoc(docRef, {
     ...input,
     updatedAt: serverTimestamp(),
@@ -108,7 +108,7 @@ export async function updateAssessment(
  * Delete an assessment
  */
 export async function deleteAssessment(assessmentId: string): Promise<void> {
-  const docRef = doc(db, COLLECTION_NAME, assessmentId);
+  const docRef = doc(getDb(), COLLECTION_NAME, assessmentId);
   await deleteDoc(docRef);
 }
 
@@ -120,7 +120,7 @@ export async function getAssessmentsByStatus(
   status: Assessment['status']
 ): Promise<Assessment[]> {
   const q = query(
-    collection(db, COLLECTION_NAME),
+    collection(getDb(), COLLECTION_NAME),
     where('createdBy', '==', userId),
     where('status', '==', status),
     orderBy('createdAt', 'desc')

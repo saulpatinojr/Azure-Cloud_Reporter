@@ -1,7 +1,8 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
-type RequestOptions = RequestInit & {
+type RequestOptions = Omit<RequestInit, 'body'> & {
   parseJson?: boolean;
+  body?: any;
 };
 
 export async function http<T = unknown>(path: string, options: RequestOptions = {}, baseUrl: string = API_BASE_URL): Promise<T> {
@@ -68,11 +69,17 @@ export const ApiRoutes = {
 } as const;
 
 export const httpFactories = {
-  ingestion: API_BASE_URL ? (path: string, options?: RequestOptions) => http(path, options) : null,
+  ingestion: API_BASE_URL ? <T = unknown>(path: string, options?: RequestOptions) => http<T>(path, options) : null,
   template(baseUrl: string) {
-    return (path: string, options?: RequestOptions) => http(path, options, baseUrl);
+    return <T = unknown>(path: string, options?: RequestOptions) => http<T>(path, options, baseUrl);
   },
   ai(baseUrl: string) {
-    return (path: string, options?: RequestOptions) => http(path, options, baseUrl);
+    return <T = unknown>(path: string, options?: RequestOptions) => http<T>(path, options, baseUrl);
   },
 };
+
+export function createHttpClient(baseUrl?: string) {
+  return <T = unknown>(path: string, options?: RequestOptions) => http<T>(path, options, baseUrl ?? API_BASE_URL);
+}
+
+// Note: `safeApiCall` is implemented in `services/api/index.ts` which re-exports this module.

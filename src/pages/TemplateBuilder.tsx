@@ -5,7 +5,7 @@ import { Badge, Button, Card, CardHeader } from '../design-system';
 import type { Template, TemplateSection } from '../types';
 import { fetchTemplate, saveTemplateSection } from '../services/api/templates';
 import { generateSection } from '../services/api/ai';
-import { TextareaHTMLAttributes } from 'react';
+import type { TextareaHTMLAttributes } from 'react';
 
 export default function TemplateBuilder() {
   const { id } = useParams();
@@ -25,7 +25,7 @@ export default function TemplateBuilder() {
       const result = await fetchTemplate(id);
       if (result.ok && result.data) {
         setTemplate(result.data);
-        const clones = Object.fromEntries(result.data.sections.map((section) => [section.id, { ...section }]));
+        const clones = Object.fromEntries(result.data.sections.map((section: TemplateSection) => [section.id, { ...section }]));
         setDraftSections(clones);
         setActiveSectionId(result.data.sections[0]?.id ?? null);
       }
@@ -186,7 +186,7 @@ export default function TemplateBuilder() {
                   minRows={6}
                 />
                 <p className="text-xs text-slate-500">
-                  Use handlebars-style variables (e.g. <code>{{variable_key}}</code>). Variables defined below should match.
+                  Use handlebars-style variables (e.g. <code>{'{{variable_key}}'}</code>). Variables defined below should match.
                 </p>
               </fieldset>
 

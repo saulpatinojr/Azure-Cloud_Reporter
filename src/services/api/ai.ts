@@ -1,4 +1,5 @@
-import { createHttpClient, ApiRoutes, safeApiCall } from './http';
+import { createHttpClient, ApiRoutes } from './http';
+import { safeApiCall } from './index';
 
 const AI_BASE_URL = import.meta.env.VITE_AI_API_URL;
 const aiHttp = AI_BASE_URL ? createHttpClient(AI_BASE_URL) : null;
@@ -35,7 +36,7 @@ export async function generateSection(request: GenerateRequest) {
   }
 
   return safeApiCall<GenerateResponse>(() =>
-    aiHttp(ApiRoutes.ai.generateNarrative, {
+    aiHttp<GenerateResponse>(ApiRoutes.ai.generateNarrative, {
       method: 'POST',
       body: {
         template_id: request.templateId,
@@ -46,3 +47,4 @@ export async function generateSection(request: GenerateRequest) {
     }),
   );
 }
+
