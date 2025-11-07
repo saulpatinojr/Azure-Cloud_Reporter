@@ -18,7 +18,7 @@ export interface Assessment {
   assessmentTypeId: string;
   deadline: Timestamp | null;
   teamMembers: string;
-  status: 'draft' | 'in_progress' | 'ready' | 'generating' | 'completed';
+  status: 'draft' | 'in_progress' | 'ready' | 'generating' | 'completed' | 'planning' | 'discovery' | 'analysis' | 'review' | 'archived';
   readinessPercentage: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;

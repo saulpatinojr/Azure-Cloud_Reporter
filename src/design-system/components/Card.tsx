@@ -24,8 +24,8 @@ export function Card({
   return (
     <div
       className={cn(
-        'rounded-2xl border bg-surface shadow-card transition-shadow',
-        variant === 'muted' && 'bg-surface-muted/60',
+        'rounded-xl border border-border bg-surface shadow-md transition-shadow',
+        variant === 'muted' && 'bg-surface-elevated',
         paddingMap[padding],
         className,
       )}
@@ -45,8 +45,8 @@ export function CardHeader({ title, subtitle, action }: CardHeaderProps) {
   return (
     <div className="flex items-start justify-between gap-3 pb-4">
       <div>
-        <h3 className="text-lg font-semibold text-slate-900">{title}</h3>
-        {subtitle && <p className="text-sm text-slate-500 mt-1">{subtitle}</p>}
+        <h3 className="text-lg font-semibold text-text">{title}</h3>
+        {subtitle && <p className="text-sm text-text-secondary mt-1">{subtitle}</p>}
       </div>
       {action}
     </div>

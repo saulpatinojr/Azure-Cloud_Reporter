@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes } from 'react';
 import { forwardRef } from 'react';
 import { cn } from '../../utils/helpers';
 
-type ButtonVariant = 'primary' | 'secondary' | 'ghost';
+export type ButtonVariant = 'primary' | 'secondary' | 'success' | 'warning' | 'alert' | 'ghost' | 'outline';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -11,18 +11,22 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   block?: boolean;
 };
 
-const baseClasses = 'inline-flex items-center justify-center rounded-full font-medium transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-indigo-200 disabled:opacity-60 disabled:cursor-not-allowed';
+const baseClasses = 'inline-flex items-center justify-center rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
 const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-primary text-white shadow-lg shadow-indigo-200 hover:shadow-layer hover:-translate-y-0.5',
-  secondary: 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50',
-  ghost: 'bg-transparent text-slate-700 hover:bg-slate-100',
+  primary: 'bg-primary text-white hover:bg-primary/90 focus:ring-primary shadow-md',
+  secondary: 'bg-surface border border-border text-text hover:bg-surface-elevated focus:ring-primary',
+  success: 'bg-success text-white hover:bg-success/90 focus:ring-success',
+  warning: 'bg-warning text-white hover:bg-warning/90 focus:ring-warning',
+  alert: 'bg-alert text-white hover:bg-alert/90 focus:ring-alert',
+  ghost: 'bg-transparent text-text hover:bg-surface focus:ring-primary',
+  outline: 'bg-transparent border border-border text-text hover:bg-surface-elevated focus:ring-primary',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-10 px-4 text-sm',
-  md: 'h-12 px-6 text-sm',
-  lg: 'h-14 px-8 text-base',
+  sm: 'h-9 px-3 text-sm',
+  md: 'h-10 px-4 text-base',
+  lg: 'h-12 px-6 text-lg',
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(

@@ -4,18 +4,17 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+  },
   build: {
     rollupOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('lucide-react')) return 'lucide';
-            if (id.includes('react') || id.includes('react-dom')) return 'react-vendors';
-            if (id.includes('firebase')) return 'firebase';
-            if (id.includes('lodash')) return 'lodash';
-            if (id.includes('date-fns')) return 'date-fns';
-            return 'vendor';
-          }
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          firebase: ['firebase/app', 'firebase/auth', 'firebase/firestore', 'firebase/storage'],
+          lucide: ['lucide-react'],
         },
       },
     },

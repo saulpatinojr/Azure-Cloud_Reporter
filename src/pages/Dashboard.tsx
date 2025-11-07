@@ -7,6 +7,7 @@ import type { Assessment, Client } from '../types';
 import { formatDate } from '../utils/helpers';
 import { AppShell } from '../components/layout/AppShell';
 import { Button, Card, CardHeader, Badge, Progress } from '../design-system';
+import { SampleChart } from '../components/SampleChart';
 import { Calendar, UploadCloud, BarChart3, Sparkles, ArrowUpRight } from 'lucide-react';
 
 type StageKey = 'plan' | 'collect' | 'analyze' | 'deliver';
@@ -28,15 +29,25 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!user) {
+    // Only redirect if we're not in demo mode (check current path)
+    if (!user && window.location.pathname !== '/dashboard') {
       navigate('/');
       return;
     }
-    loadData();
+    if (user) {
+      loadData();
+    } else {
+      // Demo mode - use mock data
+      setStats({ totalAssessments: 3, inProgress: 2, completed: 1, ready: 0 });
+      setLoading(false);
+    }
   }, [user, navigate]);
 
   const loadData = async () => {
-    if (!user) return;
+    if (!user) {
+      // Demo mode - don't try to load real data
+      return;
+    }
 
     try {
       const [assessmentsData, clientsData, statsData] = await Promise.all([
@@ -164,6 +175,10 @@ export default function Dashboard() {
           </div>
         </section>
 
+        <section>
+          <SampleChart />
+        </section>
+
         <section className="grid gap-6 xl:grid-cols-3">
           <Card className="xl:col-span-2" padding="lg">
             <CardHeader
@@ -177,7 +192,7 @@ export default function Dashboard() {
             />
             <div className="space-y-4">
               {workspaceHighlights.length === 0 && (
-                <div className="rounded-2xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">
+                <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-text-secondary bg-surface">
                   No assessments yet. Create your first workspace to see progress, tasks, and AI recommendations.
                 </div>
               )}
@@ -186,15 +201,15 @@ export default function Dashboard() {
                   type="button"
                   key={workspace.id}
                   onClick={() => navigate(`/assessments/${workspace.id}`)}
-                  className="w-full rounded-2xl border border-slate-200 bg-white px-5 py-4 text-left transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-card"
+                  className="w-full rounded-2xl border border-border bg-surface px-5 py-4 text-left transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg"
                 >
                   <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <p className="font-semibold text-slate-900">{workspace.name}</p>
-                      <p className="text-sm text-slate-500">{workspace.client}</p>
+                      <p className="font-semibold text-text">{workspace.name}</p>
+                      <p className="text-sm text-text-secondary">{workspace.client}</p>
                     </div>
                     <div className="flex flex-1 flex-col gap-2 md:max-w-md">
-                      <div className="flex items-center justify-between text-xs text-slate-500">
+                      <div className="flex items-center justify-between text-xs text-text-secondary">
                         <span>Readiness</span>
                         <span>{workspace.readinessPercentage}%</span>
                       </div>
@@ -202,7 +217,7 @@ export default function Dashboard() {
                     </div>
                     <Badge variant="primary">{stageLabels[workspace.stage]}</Badge>
                   </div>
-                  <p className="mt-3 text-xs text-slate-400">
+                  <p className="mt-3 text-xs text-text-secondary">
                     Updated {workspace.updatedAt ? formatDate(workspace.updatedAt) : 'recently'}
                   </p>
                 </button>
@@ -214,11 +229,11 @@ export default function Dashboard() {
             <CardHeader title="Pipeline stages" subtitle="Where assessments sit across the playbook." />
             <ul className="space-y-4">
               {stageOrder.map((stage) => (
-                <li key={stage} className="rounded-2xl border border-slate-200 px-4 py-3">
+                <li key={stage} className="rounded-2xl border border-border px-4 py-3 bg-surface">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-slate-800">{stageLabels[stage]}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-sm font-semibold text-text">{stageLabels[stage]}</p>
+                      <p className="text-xs text-text-secondary">
                         {stageSummary[stage]} assessment{stageSummary[stage] === 1 ? '' : 's'}
                       </p>
                     </div>
@@ -235,19 +250,19 @@ export default function Dashboard() {
             <CardHeader title="Upcoming milestones" subtitle="Deadlines and handoffs happening next." />
             <div className="space-y-4">
               {upcomingMilestones.length === 0 && (
-                <p className="rounded-2xl border border-dashed border-slate-200 p-6 text-sm text-slate-500">
+                <p className="rounded-2xl border border-dashed border-border p-6 text-sm text-text-secondary bg-surface">
                   Add deadlines to your assessments to see them here alongside stage-specific reminders.
                 </p>
               )}
               {upcomingMilestones.map((item) => (
-                <div key={item.id} className="flex items-start gap-3 rounded-2xl border border-slate-200 px-4 py-3">
-                  <div className="mt-1 rounded-full bg-indigo-100 p-2 text-indigo-500">
+                <div key={item.id} className="flex items-start gap-3 rounded-2xl border border-border px-4 py-3 bg-surface">
+                  <div className="mt-1 rounded-full bg-primary/10 p-2 text-primary">
                     <Calendar className="h-4 w-4" />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">{item.name}</p>
-                    <p className="text-sm text-slate-500">{item.client}</p>
-                    <p className="mt-1 text-xs text-slate-400">Due {item.deadline ? formatDate(item.deadline) : 'TBD'}</p>
+                    <p className="font-medium text-text">{item.name}</p>
+                    <p className="text-sm text-text-secondary">{item.client}</p>
+                    <p className="mt-1 text-xs text-text-secondary">Due {item.deadline ? formatDate(item.deadline) : 'TBD'}</p>
                   </div>
                 </div>
               ))}
@@ -314,13 +329,13 @@ type StatusTileProps = {
 
 function StatusTile({ title, value, trend, icon }: StatusTileProps) {
   return (
-    <div className="rounded-2xl border border-transparent bg-white/90 p-5 shadow-card">
+    <div className="rounded-2xl border border-border bg-surface/90 p-5 shadow-lg backdrop-blur">
       <div className="flex items-center justify-between">
-        <p className="text-sm font-medium text-slate-500">{title}</p>
-        <span className="rounded-full bg-slate-100 p-2">{icon}</span>
+        <p className="text-sm font-medium text-text-secondary">{title}</p>
+        <span className="rounded-full bg-surface p-2">{icon}</span>
       </div>
-      <p className="mt-3 text-3xl font-semibold text-slate-900">{value}</p>
-      <p className="mt-2 text-xs font-medium text-emerald-600">{trend}</p>
+      <p className="mt-3 text-3xl font-semibold text-text">{value}</p>
+      <p className="mt-2 text-xs font-medium text-success">{trend}</p>
     </div>
   );
 }
@@ -335,12 +350,12 @@ type FocusItemProps = {
 
 function FocusItem({ icon, title, description, ctaLabel, onClick }: FocusItemProps) {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-4">
+    <div className="rounded-2xl border border-border bg-surface px-4 py-4">
       <div className="flex items-start gap-3">
-        <div className="rounded-full bg-slate-100 p-2">{icon}</div>
+        <div className="rounded-full bg-surface p-2">{icon}</div>
         <div className="flex-1">
-          <p className="text-sm font-semibold text-slate-900">{title}</p>
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <p className="text-sm font-semibold text-text">{title}</p>
+          <p className="mt-1 text-sm text-text-secondary">{description}</p>
           <button
             type="button"
             onClick={onClick}

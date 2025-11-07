@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { cn } from '../../utils/helpers';
 
-type BadgeVariant = 'neutral' | 'success' | 'warning' | 'danger' | 'primary';
+export type BadgeVariant = 'neutral' | 'success' | 'warning' | 'danger' | 'primary' | 'outline' | 'destructive';
 
 type BadgeProps = {
   children: ReactNode;
@@ -15,6 +15,8 @@ const variantStyles: Record<BadgeVariant, string> = {
   warning: 'bg-amber-100 text-amber-700',
   danger: 'bg-rose-100 text-rose-700',
   primary: 'bg-indigo-100 text-indigo-700',
+  outline: 'border border-slate-200 bg-transparent text-slate-600',
+  destructive: 'bg-red-100 text-red-700',
 };
 
 export function Badge({ children, variant = 'neutral', className }: BadgeProps) {

@@ -134,39 +134,83 @@ Prepared for the MSP enterprise rollout of **Cloud Reporter**.
 
 ## 6. UI/UX Revamp Blueprint
 
-### Design System
-- **Brand**: “Trustworthy enterprise” – indigo/navy base, electric cyan accents, warm neutral backgrounds.
-- **Typography**: Inter (UI), Spectral (headings/report narratives).
-- **Components**: boxed cards, glassmorphism for highlight panels, consistent spacing (8px grid).
-- **Iconography**: Lucide for system icons; custom line illustrations for empty states.
+### Design & UX Philosophy (Look & Feel)
 
-### Key Screens (High-Level Layout)
-1. **New Landing (Pre-auth)**
-   - Hero with MSP-focused messaging, value stats, logos, CTA to tailored onboarding.
-   - Process infographic (Assess → Analyze → Deliver).
-   - Testimonials/case studies.
+The app should feel "fleshy," modern, and enterprise-grade — tangible UI with depth, clear hierarchy, and a data-first attitude. Replace the current "white mess" with a polished design system that supports both a professional dark mode and a clean, soft light mode.
+
+- **Aesthetic Direction**: modern, credible, and data-forward. Components should have subtle depth and tactile surfaces rather than flat interfaces.
+- **Color Palette**:
+  - **Base (Dark Mode)**: deep charcoals and navy blues for backgrounds and surfaces.
+  - **Base (Light Mode)**: off-white and very light greys for surfaces.
+  - **Primary Accent**: strong, credible purple or deep blue (brand actions, primary CTAs, nav highlights).
+  - **Success**: accessible green for positive statuses.
+  - **Alert**: orange/red for errors and blockers.
+  - **Data-Viz Palette**: vibrant, accessible-safe set (oranges, teals, purples, blues) for charts, with color-blind friendly alternatives.
+
+- **Theme Rules**:
+  - Provide both dark and light tokens; components consume tokens not raw color values.
+  - Enforce contrast and accessible text sizes across modes.
+
+- **Layout & Components**:
+  - **Card-Driven**: use cards as the primary organizational unit (workspaces, tasks, files, stats).
+  - **Soft UI**: large-radius corners (rounded-lg / rounded-xl) on cards, buttons, inputs.
+  - **Depth & "Flesh"**: soft shadows (a tuned `shadow-md`/`shadow-lg`) and subtle elevation scale.
+  - **Gradients**: sparing use for CTAs and hero accents (not across data viz).
+  - **No Flatness**: avoid the starter-template look; add real tactile cues (hover, focus, press states) with motion tuned for enterprise stability.
+
+- **Typography & Iconography**:
+  - **Fonts**: Inter for UI, optional Poppins for display headings; strong typographic scale for h1/h2/h3.
+  - **Icons**: Lucide icons for consistency; reserve custom illustrations for marketing/empty states.
+
+- **Data-Viz First**:
+  - Charts are first-class: donut charts, bar charts, timelines, and heatmaps.
+  - Use Recharts or Chart.js with consistent tokenized colors and a clear legend system.
+  - Every AI-generated insight must link back to source evidence (Grounding Inspector pattern).
+
+- **Accessibility & Localization**:
+  - Full a11y keyboard navigation and screen-reader semantics for all interactive controls.
+  - All user strings must be localizable (i18n-ready).
+
+### Key Screens & Component Rules
+
+1. **Landing / Pre-auth**
+   - Hero: enterprise messaging, trusted-by logos, and a strong primary CTA (gradient or deep purple solid).
+   - Onboarding CTA: SSO + Google sign-in are prominent.
+
 2. **Workspace Hub (Dashboard)**
-   - Left nav (Workspaces, Library, Insights, Admin).
-   - Main area: Kanban and timeline toggle for assessments; quick filters, SLA badges.
-   - Right rail: Notifications, upcoming deadlines.
+   - Left navigation with clear, iconified sections.
+   - Workspace Cards: stage, owner avatar, due date, blocker badges, and small sparklines or KPI chips.
+
 3. **Assessment Workspace**
-   - Header: Client info, stage progress, team, quick actions.
-   - Tabs: Overview, Files, Analysis, Deliverables, Activity.
-   - Files tab: upload slots, status (uploaded/validated/failed), validation messages, automate re-runs.
-   - Analysis tab: AI stories, chart previews, regenerate with context.
-4. **Template Library & Builder**
-   - Gallery of templates (tiles with categories, tags, usage stats).
-   - Builder: left panel outline, center canvas with drag-drop components, right attributes panel.
-   - Live data preview using mock data or previous assessments.
-5. **Insight Portal (Exec View)**
-   - KPI tiles (Pipeline value, average readiness, risk distribution).
-   - Trend charts (line/area), quadrant risk matrix, cost optimization opportunities.
+   - Staging tabs: Plan / Collect / Analyze / Deliver.
+   - Card-driven Task Engine with checkable items, owners, and SLA badges.
+
+4. **Upload Center**
+   - Full-page drag-and-drop with per-file progress bars, schema validation badges, and a File History table.
+   - Allow re-run processing and view raw ingest logs per file.
+
+5. **Analyze / AI Editor**
+   - Split view: AI draft (left) and editor/context (right) with evidence pins.
+   - Inline grounding inspector: show the exact rows/doc snippets used to generate text.
+
+6. **Insight & Client Portal**
+   - Executive dashboards: KPI tiles, trend charts, and a Portfolio view with filters.
+   - Client share: tokenized read-only links with configurable expiry and branding.
 
 ### Interaction Highlights
-- **“Assessment Playbook” wizard**: guided setup with required files, due dates, team assignment.
-- **“Grounding Inspector”**: click any AI-generated paragraph to see the supporting evidence (table rows, document snippet, screenshot), ensuring trust.
-- **Notifications & Audit Trail**: timeline of actions with filters (uploads, approvals, AI runs), exportable.
-- **Client Portal**: share trimmed view with interactive charts, tasks, comment threads.
+
+- **Assessment Playbook**: guided setup wizard for new assessments, with required-file checklist and team assignment.
+- **Grounding Inspector**: clickable evidence traces from any AI paragraph to underlying data.
+- **Audit Trail & Governance**: timeline with filters and exportable logs.
+
+### Implementation Notes (Design System First Steps)
+
+- Create a `src/design-system` folder with tokenized CSS/TS exports for colors, spacing, radii, shadows, and elevation.
+- Add Storybook and component gallery to validate themes and accessibility.
+- Convert `HeroCard` and `UploadModal` to consume tokens and support dark/light modes.
+- Standardize chart colors via design tokens and build a `ChartTheme` helper for Recharts.
+
+The above replaces the prior flat aesthetic and provides a clear, enterprise-ready direction for visuals and component behavior.
 
 ---
 
