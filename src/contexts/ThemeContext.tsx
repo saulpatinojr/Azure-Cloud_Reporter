@@ -1,4 +1,5 @@
-import { useEffect, useState, ReactNode, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
+import type { ReactNode } from 'react';
 import { defaultTheme, defaultDarkColors, themePresets } from './themeDefaults';
 import type { ThemeConfig, ThemePresetName } from './themeTypes';
 import { mergeTheme, persistTheme, loadInitialTheme } from '../theme/themeLogic';

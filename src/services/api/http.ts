@@ -12,7 +12,7 @@ export async function http<T = unknown>(path: string, options: RequestOptions = 
   const isFormData = body instanceof FormData;
   const finalHeaders = new Headers(headers as HeadersInit);
 
-  let finalBody: RequestInit['body'] = body;
+  let finalBody: RequestInit['body'] = body as RequestInit['body'];
 
   if (!isFormData) {
     if (!finalHeaders.has('Content-Type')) {

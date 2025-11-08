@@ -18,7 +18,7 @@ export default function Home() {
 
   return (
     <>
-      <HeroCard onOpenUpload={() => setOpen(true)} />
+      <HeroCard />
       <Suspense fallback={null}>
         <UploadModal
           open={open}

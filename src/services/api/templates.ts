@@ -39,7 +39,7 @@ export async function saveTemplateSection(templateId: string, section: TemplateS
   return safeApiCall(() =>
     templateHttp<void>(ApiRoutes.templates.updateSection(templateId, section.id), {
       method: 'PUT',
-      body: section,
+      body: section as unknown as Record<string, unknown>,
     }),
   );
 }

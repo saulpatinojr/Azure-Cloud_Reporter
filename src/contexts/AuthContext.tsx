@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import type { User } from 'firebase/auth';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { getAuthSafe } from '../lib/firebase';
-import { ensureAuthInitialized, googleProviderFactory, emailSignIn, passwordReset, performSignOut } from '../auth/authLogic';
+import { ensureAuthInitialized, emailSignIn, passwordReset, performSignOut } from '../auth/authLogic';
 
 // Types moved to authTypes.ts to satisfy react-refresh rule.
 
@@ -17,7 +17,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = useCallback(async () => {
-    const provider = googleProviderFactory(GoogleAuthProvider);
+    const provider = new GoogleAuthProvider();
     try {
       const authInstance = getAuthSafe();
       await signInWithPopup(authInstance, provider);

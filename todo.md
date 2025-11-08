@@ -52,7 +52,12 @@
 - [ ] Set up Vertex AI client
 - [ ] Implement readiness calculation with AI
 - [ ] Create section generation logic
-- [ ] Integrate MCP servers for grounded data
+- [ ] Integrate MCP servers for grounded data:
+  - [ ] Azure MCP Server (https://github.com/microsoft/mcp/tree/main/servers/Azure.Mcp.Server) - Azure resource management and diagnostics
+  - [ ] GitHub MCP Server (https://github.com/github/github-mcp-server) - GitHub repository operations and code analysis
+  - [ ] Markitdown MCP Server (https://github.com/microsoft/markitdown) - Document processing and conversion
+  - [ ] Playwright MCP Server (https://github.com/microsoft/playwright-mcp) - Web automation and testing
+  - [ ] MCP Documentation (https://github.com/microsoftdocs/mcp) - Reference and best practices
 - [ ] Implement prompt execution system
 
 ## Phase 7: Document Generation

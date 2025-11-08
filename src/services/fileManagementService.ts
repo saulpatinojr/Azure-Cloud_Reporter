@@ -17,7 +17,8 @@ import {
   orderBy, 
   limit,
   Timestamp,
-  writeBatch
+  writeBatch,
+  type QueryConstraint
 } from 'firebase/firestore';
 import { storage, db } from '../lib/firebase-native';
 
@@ -237,7 +238,7 @@ export class FileManagementService {
   // Search and filter files
   async searchFiles(filters: FileSearchFilters = {}): Promise<FileRecord[]> {
     const q = collection(db, 'files');
-    const constraints: unknown[] = [];
+    const constraints: QueryConstraint[] = [];
 
     // Apply filters
     if (filters.type && filters.type.length > 0) {
@@ -455,7 +456,7 @@ export class FileManagementService {
     };
   }
 
-  private async processImage(): Promise<FileRecord['processingResults']> {
+  private async processImage(_fileRecord: FileRecord): Promise<FileRecord['processingResults']> {
     // In a real implementation, this would use image analysis APIs
     return {
       imageAnalysis: {
@@ -467,7 +468,7 @@ export class FileManagementService {
     };
   }
 
-  private async processCSV(): Promise<FileRecord['processingResults']> {
+  private async processCSV(_fileRecord: FileRecord): Promise<FileRecord['processingResults']> {
     // In a real implementation, this would parse CSV and extract insights
     return {
       structuredData: {
@@ -479,7 +480,7 @@ export class FileManagementService {
     };
   }
 
-  private async processText(): Promise<FileRecord['processingResults']> {
+  private async processText(_fileRecord: FileRecord): Promise<FileRecord['processingResults']> {
     // In a real implementation, this would analyze text content
     return {
       textExtracted: 'Text file content would be analyzed here',

@@ -34,7 +34,7 @@ export async function validateUpload(file: File): Promise<ApiResult<ValidationRe
 
 export async function submitUpload(file: File): Promise<ApiResult<UploadJob>> {
   if (!hasApiBase) {
-    return mockUpload(file);
+    return mockUpload();
   }
 
   const payload = new FormData();

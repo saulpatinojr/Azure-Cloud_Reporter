@@ -492,7 +492,7 @@ export default function UploadCenter() {
 
       <div className="flex items-center gap-1 border border-border rounded-lg p-1">
         <Button
-          variant={viewMode === 'grid' ? 'default' : 'outline'}
+          variant={viewMode === 'grid' ? 'primary' : 'outline'}
           size="sm"
           aria-label="Grid view"
           title="Grid view"
@@ -501,7 +501,7 @@ export default function UploadCenter() {
           <Grid3X3 className="h-4 w-4" />
         </Button>
         <Button
-          variant={viewMode === 'list' ? 'default' : 'outline'}
+          variant={viewMode === 'list' ? 'primary' : 'outline'}
           size="sm"
           aria-label="List view"
           title="List view"
