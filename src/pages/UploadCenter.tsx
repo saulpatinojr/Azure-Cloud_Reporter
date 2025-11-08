@@ -3,12 +3,12 @@ import { useAuth } from '../contexts/AuthContext';
 import { AppShell } from '../components/layout/AppShell';
 import { Button, Card, CardHeader } from '../design-system';
 import { 
-  Upload, Search, Filter, Download, Eye, Trash2, Edit3, 
-  File, FileText, Image, BarChart3, Archive, Share2,
-  Calendar, User, Tag, HardDrive, Activity, Zap,
-  CheckCircle2, XCircle, Clock, AlertTriangle, Info,
-  Grid3X3, List, SortAsc, SortDesc, MoreVertical,
-  FolderOpen, Folder, Plus, RefreshCw, Settings
+  Upload, Search, Download, Eye, Trash2, Edit3, 
+  File, FileText, Image, BarChart3,
+  Calendar, User, Tag,
+  CheckCircle2, XCircle, Clock,
+  Grid3X3, List, MoreVertical,
+  FolderOpen, RefreshCw
 } from 'lucide-react';
 import { fileManagementService } from '../services/fileManagementService';
 import type { FileRecord, FileSearchFilters, FileUploadProgress } from '../services/fileManagementService';
@@ -69,6 +69,8 @@ function FileUploadZone({ onFileUpload, isUploading, acceptedTypes }: FileUpload
         accept={acceptedTypes.join(',')}
         onChange={handleFileInput}
         disabled={isUploading}
+        aria-label="Upload files"
+        title="Upload files"
         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
       />
       
@@ -156,6 +158,8 @@ function FileCard({ file, viewMode, onView, onDownload, onEdit, onDelete, isSele
       }`}>
         <input
           type="checkbox"
+          aria-label={`Select file ${file.originalName}`}
+          title={`Select file ${file.originalName}`}
           checked={isSelected}
           onChange={(e) => onSelect(file, e.target.checked)}
           className="rounded border-border"
@@ -180,16 +184,16 @@ function FileCard({ file, viewMode, onView, onDownload, onEdit, onDelete, isSele
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" onClick={() => onView(file)}>
+          <Button variant="outline" size="sm" onClick={() => onView(file)} aria-label={`View file ${file.originalName}`} title="View file">
             <Eye className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={() => onDownload(file)}>
+          <Button variant="outline" size="sm" onClick={() => onDownload(file)} aria-label={`Download file ${file.originalName}`} title="Download file">
             <Download className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={() => onEdit(file)}>
+          <Button variant="outline" size="sm" onClick={() => onEdit(file)} aria-label={`Edit file ${file.originalName}`} title="Edit file">
             <Edit3 className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="sm" onClick={() => onDelete(file)}>
+          <Button variant="outline" size="sm" onClick={() => onDelete(file)} aria-label={`Delete file ${file.originalName}`} title="Delete file">
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -205,6 +209,8 @@ function FileCard({ file, viewMode, onView, onDownload, onEdit, onDelete, isSele
         <div className="flex items-start justify-between">
           <input
             type="checkbox"
+            aria-label={`Select file ${file.originalName}`}
+            title={`Select file ${file.originalName}`}
             checked={isSelected}
             onChange={(e) => onSelect(file, e.target.checked)}
             className="rounded border-border"
@@ -262,11 +268,11 @@ function FileCard({ file, viewMode, onView, onDownload, onEdit, onDelete, isSele
         </div>
 
         <div className="flex gap-2 pt-2 border-t border-border">
-          <Button variant="outline" size="sm" className="flex-1" onClick={() => onView(file)}>
+          <Button variant="outline" size="sm" className="flex-1" onClick={() => onView(file)} aria-label={`View file ${file.originalName}`} title="View file">
             <Eye className="h-3 w-3 mr-1" />
             View
           </Button>
-          <Button variant="outline" size="sm" onClick={() => onDownload(file)}>
+          <Button variant="outline" size="sm" onClick={() => onDownload(file)} aria-label={`Download file ${file.originalName}`} title="Download file">
             <Download className="h-3 w-3" />
           </Button>
         </div>
@@ -290,17 +296,13 @@ export default function UploadCenter() {
 
   const acceptedTypes = ['.pdf', '.png', '.jpg', '.jpeg', '.csv', '.txt', '.docx', '.xlsx'];
 
-  useEffect(() => {
-    loadFiles();
-  }, [user]);
-
-  const loadFiles = async () => {
+  const loadFiles = useCallback(async () => {
     try {
       setLoading(true);
       const filters: FileSearchFilters = {};
       
       if (selectedCategory !== 'all') {
-        filters.category = [selectedCategory as any];
+        filters.category = [selectedCategory as FileRecord['category']];
       }
       
       if (searchQuery) {
@@ -334,7 +336,13 @@ export default function UploadCenter() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedCategory, searchQuery, sortBy, sortOrder]);
+
+  useEffect(() => {
+    if (user) {
+      loadFiles();
+    }
+  }, [user, loadFiles]);
 
   const handleFileUpload = async (fileList: FileList) => {
     setUploading(true);
@@ -458,6 +466,8 @@ export default function UploadCenter() {
         <input
           type="text"
           placeholder="Search files..."
+          aria-label="Search files"
+          title="Search files"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="h-9 w-64 rounded-lg border border-border bg-surface pl-9 pr-3 text-sm text-text placeholder:text-text-secondary"
@@ -467,6 +477,8 @@ export default function UploadCenter() {
       <select
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
+        aria-label="Filter by category"
+        title="Filter by category"
         className="h-9 rounded-lg border border-border bg-surface px-3 text-sm text-text"
       >
         <option value="all">All Categories</option>
@@ -482,6 +494,8 @@ export default function UploadCenter() {
         <Button
           variant={viewMode === 'grid' ? 'default' : 'outline'}
           size="sm"
+          aria-label="Grid view"
+          title="Grid view"
           onClick={() => setViewMode('grid')}
         >
           <Grid3X3 className="h-4 w-4" />
@@ -489,6 +503,8 @@ export default function UploadCenter() {
         <Button
           variant={viewMode === 'list' ? 'default' : 'outline'}
           size="sm"
+          aria-label="List view"
+          title="List view"
           onClick={() => setViewMode('list')}
         >
           <List className="h-4 w-4" />
@@ -502,7 +518,7 @@ export default function UploadCenter() {
         </Button>
       )}
 
-      <Button onClick={loadFiles} disabled={loading}>
+      <Button onClick={loadFiles} disabled={loading} aria-label="Refresh file list" title="Refresh file list">
         <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
         Refresh
       </Button>
@@ -547,11 +563,8 @@ export default function UploadCenter() {
                       <span className="text-sm text-text">File {progress.fileId}</span>
                       <span className="text-sm text-text-secondary">{progress.progress.toFixed(0)}%</span>
                     </div>
-                    <div className="w-full bg-surface rounded-full h-2">
-                      <div
-                        className="bg-primary h-2 rounded-full transition-all"
-                        style={{ width: `${progress.progress}%` }}
-                      />
+                    <div className="progress-track" aria-label={`Upload progress for file ${progress.fileId}`} title={`Upload progress for file ${progress.fileId}`}>
+                      <div className={`progress-fill w-pct-${Math.min(100, Math.max(0, Math.round(progress.progress)))}`}></div>
                     </div>
                   </div>
                   {progress.status === 'completed' && <CheckCircle2 className="h-5 w-5 text-success" />}
@@ -575,9 +588,11 @@ export default function UploadCenter() {
                 value={`${sortBy}_${sortOrder}`}
                 onChange={(e) => {
                   const [newSortBy, newSortOrder] = e.target.value.split('_');
-                  setSortBy(newSortBy as any);
-                  setSortOrder(newSortOrder as any);
+                  setSortBy(newSortBy as 'name' | 'date' | 'size');
+                  setSortOrder(newSortOrder as 'asc' | 'desc');
                 }}
+                aria-label="Sort files"
+                title="Sort files"
                 className="text-sm rounded-lg border border-border bg-surface px-3 py-1"
               >
                 <option value="date_desc">Newest first</option>

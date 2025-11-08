@@ -43,7 +43,7 @@ interface AutomationTrigger {
   condition?: {
     field: string;
     operator: string;
-    value: any;
+    value: unknown;
   };
 }
 
@@ -51,14 +51,14 @@ interface AutomationCondition {
   id: string;
   field: string;
   operator: 'equals' | 'not_equals' | 'greater_than' | 'less_than' | 'contains' | 'not_contains';
-  value: any;
+  value: unknown;
   logicalOperator?: 'AND' | 'OR';
 }
 
 interface AutomationAction {
   id: string;
   type: 'email' | 'slack' | 'teams' | 'create_task' | 'update_status' | 'generate_report' | 'api_call';
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   delay?: number;
 }
 
@@ -68,7 +68,7 @@ interface AutomationExecution {
   startTime: Date;
   endTime: Date | null;
   status: 'running' | 'completed' | 'failed' | 'cancelled';
-  result?: any;
+  result?: Record<string, unknown>;
   error?: string;
   logs: string[];
 }
@@ -420,6 +420,8 @@ export default function Automations() {
       <select
         value={selectedCategory}
         onChange={(e) => setSelectedCategory(e.target.value)}
+        aria-label="Filter automations by category"
+        title="Filter automations by category"
         className="h-9 rounded-lg border border-border bg-surface px-3 text-sm text-text"
       >
         <option value="all">All Categories</option>

@@ -41,8 +41,15 @@ export interface FileRecord {
   processingStatus?: 'pending' | 'processing' | 'completed' | 'failed';
   processingResults?: {
     textExtracted?: string;
-    imageAnalysis?: any;
-    structuredData?: any;
+    imageAnalysis?: {
+      detectedObjects?: string[];
+      confidence?: number;
+    };
+    structuredData?: {
+      rows?: number;
+      columns?: number;
+      schema?: unknown[];
+    };
     aiInsights?: string;
   };
   metadata: {
@@ -229,8 +236,8 @@ export class FileManagementService {
 
   // Search and filter files
   async searchFiles(filters: FileSearchFilters = {}): Promise<FileRecord[]> {
-    let q = collection(db, 'files');
-    let constraints: any[] = [];
+    const q = collection(db, 'files');
+    const constraints: unknown[] = [];
 
     // Apply filters
     if (filters.type && filters.type.length > 0) {
@@ -319,7 +326,7 @@ export class FileManagementService {
   async updateFile(fileId: string, updates: Partial<FileRecord>): Promise<void> {
     const docRef = doc(db, 'files', fileId);
     
-    const updateData: any = {
+    const updateData: Record<string, unknown> = {
       ...updates,
       lastModified: Timestamp.fromDate(new Date())
     };
@@ -367,7 +374,7 @@ export class FileManagementService {
         } else {
           failed.push(fileId);
         }
-      } catch (error) {
+      } catch {
         failed.push(fileId);
       }
     }
@@ -429,12 +436,12 @@ export class FileManagementService {
         processingResults,
         isProcessed: true
       });
-    } catch (error) {
-      console.error('File processing error:', error);
+    } catch (err) {
+      console.error('File processing error:', err);
       await this.updateFile(fileRecord.id, {
         processingStatus: 'failed',
         processingResults: {
-          textExtracted: `Processing failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+          textExtracted: `Processing failed: ${err instanceof Error ? err.message : 'Unknown error'}`
         }
       });
     }
@@ -448,7 +455,7 @@ export class FileManagementService {
     };
   }
 
-  private async processImage(_fileRecord: FileRecord): Promise<FileRecord['processingResults']> {
+  private async processImage(): Promise<FileRecord['processingResults']> {
     // In a real implementation, this would use image analysis APIs
     return {
       imageAnalysis: {
@@ -460,7 +467,7 @@ export class FileManagementService {
     };
   }
 
-  private async processCSV(_fileRecord: FileRecord): Promise<FileRecord['processingResults']> {
+  private async processCSV(): Promise<FileRecord['processingResults']> {
     // In a real implementation, this would parse CSV and extract insights
     return {
       structuredData: {
@@ -472,7 +479,7 @@ export class FileManagementService {
     };
   }
 
-  private async processText(_fileRecord: FileRecord): Promise<FileRecord['processingResults']> {
+  private async processText(): Promise<FileRecord['processingResults']> {
     // In a real implementation, this would analyze text content
     return {
       textExtracted: 'Text file content would be analyzed here',

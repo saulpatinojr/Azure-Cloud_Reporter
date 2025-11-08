@@ -31,11 +31,7 @@ export function Topbar({ title, subtitle, actions, className, userEmail }: Topba
             <img
               src="/landing_page_banner.png"
               alt="Cloud Reporter Workspace Hub"
-              style={{
-                maxHeight: '280px', // 56px * 5 = 280px (500% increase)
-                width: 'auto',
-                display: 'block'
-              }}
+              className="block max-h-[280px] w-auto"
             />
           ) : (
             <div>

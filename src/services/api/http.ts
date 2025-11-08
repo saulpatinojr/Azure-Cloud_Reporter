@@ -1,9 +1,10 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? '';
 
-type RequestOptions = Omit<RequestInit, 'body'> & {
+interface RequestOptionsBase extends Omit<RequestInit, 'body'> {
   parseJson?: boolean;
-  body?: any;
-};
+}
+type SerializableBody = Record<string, unknown> | string | FormData | Blob | ArrayBuffer | undefined;
+type RequestOptions = RequestOptionsBase & { body?: SerializableBody };
 
 export async function http<T = unknown>(path: string, options: RequestOptions = {}, baseUrl: string = API_BASE_URL): Promise<T> {
   const { parseJson = true, headers = {}, body, ...rest } = options;
@@ -43,10 +44,14 @@ export async function http<T = unknown>(path: string, options: RequestOptions = 
   return (await response.json()) as T;
 }
 
-async function safeParseError(response: Response) {
+async function safeParseError(response: Response): Promise<string> {
   try {
     const data = await response.json();
-    return data?.error || data?.message || JSON.stringify(data);
+    if (data && typeof data === 'object') {
+      const anyData = data as Record<string, unknown>;
+      return (typeof anyData.error === 'string' && anyData.error) || (typeof anyData.message === 'string' && anyData.message) || JSON.stringify(data);
+    }
+    return JSON.stringify(data);
   } catch (error) {
     console.warn('Failed to parse error body', error);
     return response.statusText;

@@ -346,10 +346,13 @@ export default function Settings() {
               <div className="mt-6 space-y-6">
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="defaultAssessmentTemplate" className="block text-sm font-medium text-text mb-2">
                       Default Assessment Template
                     </label>
                     <select
+                      id="defaultAssessmentTemplate"
+                      aria-label="Default assessment template"
+                      title="Default assessment template"
                       value={teamSettings.defaultAssessmentTemplate}
                       onChange={(e) => setTeamSettings(prev => ({ ...prev, defaultAssessmentTemplate: e.target.value }))}
                       className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text"
@@ -362,10 +365,13 @@ export default function Settings() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="defaultPriorityLevel" className="block text-sm font-medium text-text mb-2">
                       Default Priority Level
                     </label>
                     <select
+                      id="defaultPriorityLevel"
+                      aria-label="Default priority level"
+                      title="Default priority level"
                       value={teamSettings.assessmentDefaults.priority}
                       onChange={(e) => setTeamSettings(prev => ({ 
                         ...prev, 
@@ -385,10 +391,13 @@ export default function Settings() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="estimatedDuration" className="block text-sm font-medium text-text mb-2">
                       Estimated Duration (days)
                     </label>
                     <input
+                      id="estimatedDuration"
+                      aria-label="Estimated duration in days"
+                      title="Estimated duration in days"
                       type="number"
                       value={teamSettings.assessmentDefaults.estimatedDuration}
                       onChange={(e) => setTeamSettings(prev => ({ 
@@ -405,10 +414,13 @@ export default function Settings() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="followUpReminder" className="block text-sm font-medium text-text mb-2">
                       Follow-up Reminder (days)
                     </label>
                     <input
+                      id="followUpReminder"
+                      aria-label="Follow-up reminder days"
+                      title="Follow-up reminder days"
                       type="number"
                       value={teamSettings.assessmentDefaults.followUpDays}
                       onChange={(e) => setTeamSettings(prev => ({ 
@@ -431,8 +443,10 @@ export default function Settings() {
                       <h4 className="text-sm font-medium text-text">Auto-Assignment Rules</h4>
                       <p className="text-sm text-text-secondary">Automatically assign assessments based on expertise and workload</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer" aria-label="Auto-assignment rules toggle" title="Auto-assignment rules toggle">
                       <input
+                        aria-label="Auto-assignment rules enabled"
+                        title="Auto-assignment rules enabled"
                         type="checkbox"
                         checked={teamSettings.autoAssignmentRules}
                         onChange={(e) => setTeamSettings(prev => ({ ...prev, autoAssignmentRules: e.target.checked }))}
@@ -447,9 +461,11 @@ export default function Settings() {
                       <h4 className="text-sm font-medium text-text">Workload Balancing</h4>
                       <p className="text-sm text-text-secondary">Distribute assessments evenly across team members</p>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer" aria-label="Workload balancing toggle" title="Workload balancing toggle">
                       <input
                         type="checkbox"
+                        aria-label="Workload balancing enabled"
+                        title="Workload balancing enabled"
                         checked={teamSettings.workloadBalancing}
                         onChange={(e) => setTeamSettings(prev => ({ ...prev, workloadBalancing: e.target.checked }))}
                         className="sr-only peer"
@@ -525,9 +541,11 @@ export default function Settings() {
                     <h4 className="text-sm font-medium text-text">Require Multi-Factor Authentication</h4>
                     <p className="text-sm text-text-secondary">All users must enable MFA to access the platform</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                  <label className="relative inline-flex items-center cursor-pointer" aria-label="Require multi-factor authentication" title="Require multi-factor authentication">
                     <input
                       type="checkbox"
+                      aria-label="MFA required"
+                      title="MFA required"
                       checked={securitySettings.mfaRequired}
                       onChange={(e) => setSecuritySettings(prev => ({ ...prev, mfaRequired: e.target.checked }))}
                       className="sr-only peer"
@@ -537,17 +555,20 @@ export default function Settings() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
+                  <label htmlFor="sessionTimeout" className="block text-sm font-medium text-text mb-2">
                     Session Timeout (minutes)
                   </label>
-                  <input
-                    type="number"
-                    value={securitySettings.sessionTimeout}
-                    onChange={(e) => setSecuritySettings(prev => ({ ...prev, sessionTimeout: parseInt(e.target.value) }))}
-                    className="w-32 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text"
-                    min="15"
-                    max="1440"
-                  />
+                    <input
+                      id="sessionTimeout"
+                      type="number"
+                      aria-label="Session timeout in minutes"
+                      title="Session timeout in minutes"
+                      value={securitySettings.sessionTimeout}
+                      onChange={(e) => setSecuritySettings(prev => ({ ...prev, sessionTimeout: parseInt(e.target.value) }))}
+                      className="w-32 rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text"
+                      min="15"
+                      max="1440"
+                    />
                   <p className="text-xs text-text-secondary mt-1">
                     Users will be automatically logged out after this period of inactivity
                   </p>
@@ -557,10 +578,11 @@ export default function Settings() {
                   <h4 className="text-sm font-medium text-text mb-4">Password Policy</h4>
                   <div className="grid gap-4 md:grid-cols-2">
                     <div>
-                      <label className="block text-sm font-medium text-text mb-2">
+                      <label htmlFor="passwordMinLength" className="block text-sm font-medium text-text mb-2">
                         Minimum Length
                       </label>
                       <input
+                        id="passwordMinLength"
                         type="number"
                         value={securitySettings.passwordPolicy.minLength}
                         onChange={(e) => setSecuritySettings(prev => ({ 
@@ -578,9 +600,11 @@ export default function Settings() {
                     
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-text">Require uppercase letters</span>
+                        <span id="pw-require-uppercase" className="text-sm text-text">Require uppercase letters</span>
                         <input
                           type="checkbox"
+                          aria-labelledby="pw-require-uppercase"
+                          title="Require uppercase letters"
                           checked={securitySettings.passwordPolicy.requireUppercase}
                           onChange={(e) => setSecuritySettings(prev => ({ 
                             ...prev, 
@@ -593,9 +617,11 @@ export default function Settings() {
                         />
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-text">Require numbers</span>
+                        <span id="pw-require-numbers" className="text-sm text-text">Require numbers</span>
                         <input
                           type="checkbox"
+                          aria-labelledby="pw-require-numbers"
+                          title="Require numbers"
                           checked={securitySettings.passwordPolicy.requireNumbers}
                           onChange={(e) => setSecuritySettings(prev => ({ 
                             ...prev, 
@@ -608,9 +634,11 @@ export default function Settings() {
                         />
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-sm text-text">Require symbols</span>
+                        <span id="pw-require-symbols" className="text-sm text-text">Require symbols</span>
                         <input
                           type="checkbox"
+                          aria-labelledby="pw-require-symbols"
+                          title="Require symbols"
                           checked={securitySettings.passwordPolicy.requireSymbols}
                           onChange={(e) => setSecuritySettings(prev => ({ 
                             ...prev, 
@@ -631,9 +659,12 @@ export default function Settings() {
                     <h4 className="text-sm font-medium text-text">Audit Logging</h4>
                     <p className="text-sm text-text-secondary">Log all user actions and system events for compliance</p>
                   </div>
-                  <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer" aria-label="Audit logging toggle" title="Audit logging toggle" htmlFor="auditLoggingToggle">
                     <input
+                      id="auditLoggingToggle"
                       type="checkbox"
+                      aria-label="Audit logging enabled"
+                      title="Audit logging enabled"
                       checked={securitySettings.auditLogging}
                       onChange={(e) => setSecuritySettings(prev => ({ ...prev, auditLogging: e.target.checked }))}
                       className="sr-only peer"
@@ -661,8 +692,9 @@ export default function Settings() {
                         <p className="text-sm text-text-secondary">Send notifications to Slack channels</p>
                       </div>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer" htmlFor="slackEnabledToggle" aria-label="Slack integration toggle" title="Slack integration toggle">
                       <input
+                        id="slackEnabledToggle"
                         type="checkbox"
                         checked={integrationSettings.slack.enabled}
                         onChange={(e) => setIntegrationSettings(prev => ({ 
@@ -678,10 +710,11 @@ export default function Settings() {
                   {integrationSettings.slack.enabled && (
                     <div className="space-y-3 border-t border-border pt-4">
                       <div>
-                        <label className="block text-sm font-medium text-text mb-2">
+                        <label htmlFor="slackWebhook" className="block text-sm font-medium text-text mb-2">
                           Webhook URL
                         </label>
                         <input
+                          id="slackWebhook"
                           type="url"
                           value={integrationSettings.slack.webhook || ''}
                           onChange={(e) => setIntegrationSettings(prev => ({ 
@@ -719,8 +752,9 @@ export default function Settings() {
                         <p className="text-sm text-text-secondary">Send notifications to Teams channels</p>
                       </div>
                     </div>
-                    <label className="relative inline-flex items-center cursor-pointer">
+                    <label className="relative inline-flex items-center cursor-pointer" htmlFor="teamsEnabledToggle" aria-label="Teams integration toggle" title="Teams integration toggle">
                       <input
+                        id="teamsEnabledToggle"
                         type="checkbox"
                         checked={integrationSettings.teams.enabled}
                         onChange={(e) => setIntegrationSettings(prev => ({ 
@@ -735,10 +769,11 @@ export default function Settings() {
                   
                   {integrationSettings.teams.enabled && (
                     <div className="border-t border-border pt-4">
-                      <label className="block text-sm font-medium text-text mb-2">
+                      <label htmlFor="teamsWebhook" className="block text-sm font-medium text-text mb-2">
                         Webhook URL
                       </label>
                       <input
+                        id="teamsWebhook"
                         type="url"
                         value={integrationSettings.teams.webhook || ''}
                         onChange={(e) => setIntegrationSettings(prev => ({ 
@@ -764,10 +799,11 @@ export default function Settings() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="azureTenantId" className="block text-sm font-medium text-text mb-2">
                       Tenant ID
                     </label>
                     <input
+                      id="azureTenantId"
                       type="text"
                       value={integrationSettings.azure.tenantId || ''}
                       onChange={(e) => setIntegrationSettings(prev => ({ 
@@ -789,10 +825,11 @@ export default function Settings() {
               
               <div className="mt-6 space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
+                  <label htmlFor="companyName" className="block text-sm font-medium text-text mb-2">
                     Company Name
                   </label>
                   <input
+                    id="companyName"
                     type="text"
                     value={companyProfile.name}
                     onChange={(e) => setCompanyProfile(prev => ({ ...prev, name: e.target.value }))}
@@ -802,10 +839,11 @@ export default function Settings() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="companyPhone" className="block text-sm font-medium text-text mb-2">
                       Phone
                     </label>
                     <input
+                      id="companyPhone"
                       type="tel"
                       value={companyProfile.contact.phone}
                       onChange={(e) => setCompanyProfile(prev => ({ 
@@ -817,10 +855,11 @@ export default function Settings() {
                   </div>
                   
                   <div>
-                    <label className="block text-sm font-medium text-text mb-2">
+                    <label htmlFor="companyEmail" className="block text-sm font-medium text-text mb-2">
                       Email
                     </label>
                     <input
+                      id="companyEmail"
                       type="email"
                       value={companyProfile.contact.email}
                       onChange={(e) => setCompanyProfile(prev => ({ 
@@ -833,10 +872,11 @@ export default function Settings() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-text mb-2">
+                  <label htmlFor="companyWebsite" className="block text-sm font-medium text-text mb-2">
                     Website
                   </label>
                   <input
+                    id="companyWebsite"
                     type="url"
                     value={companyProfile.contact.website}
                     onChange={(e) => setCompanyProfile(prev => ({ 
@@ -851,6 +891,7 @@ export default function Settings() {
                   <h4 className="text-sm font-medium text-text mb-4">Address</h4>
                   <div className="space-y-4">
                     <input
+                      aria-label="Street address"
                       type="text"
                       placeholder="Street Address"
                       value={companyProfile.address.street}
@@ -863,6 +904,7 @@ export default function Settings() {
                     
                     <div className="grid gap-4 md:grid-cols-3">
                       <input
+                        aria-label="City"
                         type="text"
                         placeholder="City"
                         value={companyProfile.address.city}
@@ -873,6 +915,7 @@ export default function Settings() {
                         className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text"
                       />
                       <input
+                        aria-label="State"
                         type="text"
                         placeholder="State"
                         value={companyProfile.address.state}
@@ -883,6 +926,7 @@ export default function Settings() {
                         className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text"
                       />
                       <input
+                        aria-label="ZIP code"
                         type="text"
                         placeholder="ZIP Code"
                         value={companyProfile.address.zip}
@@ -936,10 +980,13 @@ export default function Settings() {
                   <div className="rounded-lg border border-border bg-surface p-4">
                     <h4 className="font-medium text-text mb-2">Storage Usage</h4>
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 bg-surface rounded-full h-3">
-                        <div className="bg-primary h-3 rounded-full" style={{ width: '73%' }} />
-                      </div>
-                      <span className="text-sm text-text">73%</span>
+                      <progress
+                        className="progress-track h-3"
+                        value={73}
+                        max={100}
+                        aria-label="Storage usage"
+                      ></progress>
+                      <span className="text-sm text-text" aria-hidden="true">73%</span>
                     </div>
                     <p className="text-sm text-text-secondary mt-2">147 GB of 200 GB used</p>
                   </div>
@@ -947,10 +994,13 @@ export default function Settings() {
                   <div className="rounded-lg border border-border bg-surface p-4">
                     <h4 className="font-medium text-text mb-2">API Calls</h4>
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 bg-surface rounded-full h-3">
-                        <div className="bg-warning h-3 rounded-full" style={{ width: '42%' }} />
-                      </div>
-                      <span className="text-sm text-text">42%</span>
+                      <progress
+                        className="progress-track h-3 bg-warning"
+                        value={42}
+                        max={100}
+                        aria-label="API call usage"
+                      ></progress>
+                      <span className="text-sm text-text" aria-hidden="true">42%</span>
                     </div>
                     <p className="text-sm text-text-secondary mt-2">8,400 of 20,000 calls this month</p>
                   </div>

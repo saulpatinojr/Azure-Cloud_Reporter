@@ -70,7 +70,7 @@ async function mockValidate(file: File): Promise<ApiResult<ValidationResult>> {
   };
 }
 
-async function mockUpload(_file: File): Promise<ApiResult<UploadJob>> {
+async function mockUpload(): Promise<ApiResult<UploadJob>> {
   const job: UploadJob = {
     jobId: `mock-${Date.now()}`,
     status: 'queued',

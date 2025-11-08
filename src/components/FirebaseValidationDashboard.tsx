@@ -36,8 +36,8 @@ export const FirebaseValidationDashboard: React.FC<FirebaseValidationDashboardPr
   const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetrics[]>([]);
   const [isValidating, setIsValidating] = useState(false);
   const [lastValidation, setLastValidation] = useState<Date | null>(null);
-  const [connectionStatus, setConnectionStatus] = useState<any>(null);
-  const [integrationReport, setIntegrationReport] = useState<any>(null);
+  const [connectionStatus, setConnectionStatus] = useState<ReturnType<typeof getFirebaseConnectionStatus> | null>(null);
+  const [integrationReport, setIntegrationReport] = useState<Awaited<ReturnType<typeof generateFirebaseIntegrationReport>> | null>(null);
 
   useEffect(() => {
     loadInitialData();

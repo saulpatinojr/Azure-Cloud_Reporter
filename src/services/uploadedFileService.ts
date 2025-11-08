@@ -41,7 +41,7 @@ export async function uploadFile(
 export async function getUploadedFiles(assessmentId: string): Promise<UploadedFile[]> {
   const q = query(collection(getDb(), COLLECTION_NAME), where('assessmentId', '==', assessmentId));
   const snapshot = await getDocs(q);
-  return snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as any) } as UploadedFile));
+  return snapshot.docs.map((d) => ({ id: d.id, ...(d.data() as Record<string, unknown>) } as UploadedFile));
 }
 
 export async function getUploadedFileByRequiredFile(
@@ -58,7 +58,7 @@ export async function getUploadedFileByRequiredFile(
   if (snapshot.empty) return null;
 
   const d = snapshot.docs[0];
-  return { id: d.id, ...(d.data() as any) } as UploadedFile;
+  return { id: d.id, ...(d.data() as Record<string, unknown>) } as UploadedFile;
 }
 
 export async function deleteUploadedFile(fileId: string): Promise<void> {
@@ -66,7 +66,8 @@ export async function deleteUploadedFile(fileId: string): Promise<void> {
   await deleteDoc(docRef);
 }
 
-export async function calculateReadiness(assessmentId: string, requiredFiles: any[]): Promise<number> {
+interface RequiredFileDescriptor { isRequired: boolean }
+export async function calculateReadiness(assessmentId: string, requiredFiles: RequiredFileDescriptor[]): Promise<number> {
   const uploadedFiles = await getUploadedFiles(assessmentId);
   const requiredCount = requiredFiles.filter((f) => f.isRequired).length;
   if (requiredCount === 0) return 100;

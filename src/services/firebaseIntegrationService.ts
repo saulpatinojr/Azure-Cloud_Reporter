@@ -39,7 +39,10 @@ interface ServiceValidation {
   service: string;
   status: 'connected' | 'disconnected' | 'error';
   lastChecked: Date;
-  details?: any;
+  details?: {
+    currentUser?: boolean;
+    error?: string;
+  };
 }
 
 interface PerformanceMetrics {
@@ -47,7 +50,7 @@ interface PerformanceMetrics {
   duration: number;
   success: boolean;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Firebase Native Tool Integration Service
@@ -232,7 +235,7 @@ export class FirebaseNativeIntegrationService {
   private async validateAuthenticationService(): Promise<{ success: boolean; error?: string }> {
     try {
       return new Promise((resolve) => {
-        const unsubscribe = onAuthStateChanged(auth, (_user) => {
+        const unsubscribe = onAuthStateChanged(auth, () => {
           unsubscribe();
           resolve({ success: true });
         }, (error) => {
@@ -267,7 +270,7 @@ export class FirebaseNativeIntegrationService {
         await getMetadata(testRef);
       } catch (error) {
         // Expected if file doesn't exist, but service is accessible
-        if ((error as any).code === 'storage/object-not-found') {
+        if ((error as { code?: string }).code === 'storage/object-not-found') {
           return { success: true };
         }
         throw error;
@@ -438,7 +441,7 @@ export class FirebaseNativeIntegrationService {
   }
 
   // Performance tracking
-  public trackOperation(name: string, duration: number, success: boolean, metadata?: Record<string, any>): void {
+  public trackOperation(name: string, duration: number, success: boolean, metadata?: Record<string, unknown>): void {
     const metric: PerformanceMetrics = {
       operationName: name,
       duration,
@@ -487,7 +490,7 @@ export class FirebaseNativeIntegrationService {
 
   // Generate integration report
   public async generateIntegrationReport(): Promise<{
-    overview: any;
+    overview: ReturnType<typeof getFirebaseConnectionStatus>;
     validation: ValidationResult | null;
     serviceHealth: ServiceValidation[];
     performance: {
@@ -545,7 +548,7 @@ export const firebaseNativeIntegration = FirebaseNativeIntegrationService.getIns
 export const validateFirebaseIntegration = () => firebaseNativeIntegration.validateFirebaseIntegration();
 export const getFirebaseServiceHealth = () => firebaseNativeIntegration.getServiceHealth();
 export const generateFirebaseIntegrationReport = () => firebaseNativeIntegration.generateIntegrationReport();
-export const trackFirebaseOperation = (name: string, duration: number, success: boolean, metadata?: Record<string, any>) => 
+export const trackFirebaseOperation = (name: string, duration: number, success: boolean, metadata?: Record<string, unknown>) => 
   firebaseNativeIntegration.trackOperation(name, duration, success, metadata);
 
 // Export types

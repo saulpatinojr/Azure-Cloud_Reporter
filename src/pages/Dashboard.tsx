@@ -1,9 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getAssessments, getDashboardStats } from '../services/assessmentService';
-import { getClients } from '../services/clientService';
-import type { Assessment, Client } from '../types';
+import { useRealtimeWorkspace } from '../hooks/useRealtimeWorkspace';
+import type { Assessment } from '../types';
 import { formatDate } from '../utils/helpers';
 import { AppShell } from '../components/layout/AppShell';
 import { Button, Card, CardHeader, Badge, Progress } from '../design-system';
@@ -23,10 +22,7 @@ const stageLabels: Record<StageKey, string> = {
 export default function Dashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
-  const [assessments, setAssessments] = useState<Assessment[]>([]);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [stats, setStats] = useState({ totalAssessments: 0, inProgress: 0, completed: 0, ready: 0 });
-  const [loading, setLoading] = useState(true);
+  const { assessments, clients, stats, ready } = useRealtimeWorkspace(user?.uid);
 
   useEffect(() => {
     // Only redirect if we're not in demo mode (check current path)
@@ -34,38 +30,11 @@ export default function Dashboard() {
       navigate('/');
       return;
     }
-    if (user) {
-      loadData();
-    } else {
-      // Demo mode - use mock data
-      setStats({ totalAssessments: 3, inProgress: 2, completed: 1, ready: 0 });
-      setLoading(false);
+    // If unauthenticated, redirect (demo handling removed for clarity)
+    if (!user && window.location.pathname !== '/dashboard') {
+      navigate('/');
     }
   }, [user, navigate]);
-
-  const loadData = async () => {
-    if (!user) {
-      // Demo mode - don't try to load real data
-      return;
-    }
-
-    try {
-      const [assessmentsData, clientsData, statsData] = await Promise.all([
-        getAssessments(user.uid),
-        getClients(user.uid),
-        getDashboardStats(user.uid),
-      ]);
-
-      setAssessments(assessmentsData);
-      setClients(clientsData);
-      setStats(statsData);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const stageSummary = useMemo(() => {
     const base = stageOrder.reduce<Record<StageKey, number>>((acc, key) => {
       acc[key] = 0;
@@ -127,16 +96,7 @@ export default function Dashboard() {
     </div>
   );
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-b-2 border-primary" />
-          <p className="mt-4 text-sm text-slate-500">Preparing your workspace…</p>
-        </div>
-      </div>
-    );
-  }
+  // Removed unused showInitialSpinner variable (lint warning)
 
   return (
     <AppShell
@@ -176,7 +136,13 @@ export default function Dashboard() {
         </section>
 
         <section>
-          <SampleChart />
+          {!ready && user ? (
+            <div className="rounded-3xl border border-dashed border-border p-12 text-center text-sm text-text-secondary bg-surface/70">
+              Loading detailed insights…
+            </div>
+          ) : (
+            <SampleChart />
+          )}
         </section>
 
         <section className="grid gap-6 xl:grid-cols-3">
@@ -191,12 +157,17 @@ export default function Dashboard() {
               }
             />
             <div className="space-y-4">
-              {workspaceHighlights.length === 0 && (
+              {!ready && user && (
+                <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-text-secondary bg-surface">
+                  Fetching recent assessments…
+                </div>
+              )}
+              {ready && workspaceHighlights.length === 0 && (
                 <div className="rounded-2xl border border-dashed border-border p-8 text-center text-sm text-text-secondary bg-surface">
                   No assessments yet. Create your first workspace to see progress, tasks, and AI recommendations.
                 </div>
               )}
-              {workspaceHighlights.map((workspace) => (
+              {ready && workspaceHighlights.map((workspace) => (
                 <button
                   type="button"
                   key={workspace.id}

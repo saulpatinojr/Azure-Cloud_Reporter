@@ -91,7 +91,7 @@ export interface MCPServer {
   description: string;
   serverType: 'microsoft_learn' | 'azure_docs' | 'security_docs' | 'custom';
   endpoint: string;
-  configuration: Record<string, any>;
+  configuration: Record<string, unknown>;
   isActive: boolean;
   createdAt: Timestamp;
 }

@@ -131,27 +131,27 @@ if (isDevelopment && !isTest && useEmulators) {
     // Firestore emulator
     try {
       connectFirestoreEmulator(db, EMULATOR_HOST, 8080);
-    } catch (error) {
+    } catch {
       // Already connected or connection failed
     }
     
     // Storage emulator
     try {
       connectStorageEmulator(storage, EMULATOR_HOST, 9199);
-    } catch (error) {
+    } catch {
       // Already connected or connection failed
     }
     
     // Functions emulator
     try {
       connectFunctionsEmulator(functions, EMULATOR_HOST, 5001);
-    } catch (error) {
+    } catch {
       // Already connected or connection failed
     }
     
     console.log('🔥 Firebase emulators connected (auth, firestore, storage, functions)');
-  } catch (error) {
-    console.warn('Firebase emulator connection failed:', error);
+  } catch {
+    console.warn('Firebase emulator connection failed');
   }
 }
 
@@ -204,11 +204,11 @@ export class FirebaseError extends Error {
   }
 }
 
-export const handleFirebaseError = (error: any): FirebaseError => {
-  const errorCode = error.code || 'unknown';
-  const errorMessage = error.message || 'An unknown Firebase error occurred';
-  const service = error.code?.split('/')[0] || 'firebase';
-  
+export const handleFirebaseError = (error: unknown): FirebaseError => {
+  const errObj = error as { code?: string; message?: string } | undefined;
+  const errorCode = errObj?.code || 'unknown';
+  const errorMessage = errObj?.message || 'An unknown Firebase error occurred';
+  const service = errObj?.code?.split('/')[0] || 'firebase';
   return new FirebaseError(errorMessage, errorCode, service);
 };
 
@@ -271,7 +271,7 @@ export const getFirebaseConfigValue = async (configName: string): Promise<string
 };
 
 // Performance monitoring utilities
-export const trackPerformance = async (name: string, fn: () => Promise<any>) => {
+export const trackPerformance = async <T>(name: string, fn: () => Promise<T>): Promise<T> => {
   if (!performance) return fn();
   
   try {
@@ -289,7 +289,10 @@ export const trackPerformance = async (name: string, fn: () => Promise<any>) => 
 };
 
 // Analytics utilities
-export const logAnalyticsEvent = async (eventName: string, parameters?: Record<string, any>) => {
+export const logAnalyticsEvent = async (
+  eventName: string,
+  parameters?: Record<string, unknown>
+) => {
   if (!analytics) return;
   
   try {

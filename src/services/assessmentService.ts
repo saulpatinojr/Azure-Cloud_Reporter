@@ -10,6 +10,7 @@ import {
   where,
   orderBy,
   serverTimestamp,
+  getCountFromServer,
 } from 'firebase/firestore';
 import { getDb } from '../lib/firebase';
 import type { Assessment, CreateAssessmentInput, UpdateAssessmentInput } from '../types';
@@ -137,12 +138,36 @@ export async function getAssessmentsByStatus(
  * Get dashboard statistics
  */
 export async function getDashboardStats(userId: string) {
-  const assessments = await getAssessments(userId);
-  
+  // Use aggregation counts to avoid fetching all assessment documents when only counts are needed.
+  const baseCollection = collection(getDb(), COLLECTION_NAME);
+
+  const totalPromise = getCountFromServer(query(baseCollection, where('createdBy', '==', userId)));
+  const inProgressPromise = getCountFromServer(query(baseCollection, where('createdBy', '==', userId), where('status', 'in', ['in_progress', 'generating'])));
+  const completedPromise = getCountFromServer(query(baseCollection, where('createdBy', '==', userId), where('status', '==', 'completed')));
+  const readyPromise = getCountFromServer(query(baseCollection, where('createdBy', '==', userId), where('status', '==', 'ready')));
+
+  const [total, inProgress, completed, ready] = await Promise.all([
+    totalPromise,
+    inProgressPromise,
+    completedPromise,
+    readyPromise,
+  ]);
+
   return {
-    totalAssessments: assessments.length,
-    inProgress: assessments.filter(a => a.status === 'in_progress' || a.status === 'generating').length,
-    completed: assessments.filter(a => a.status === 'completed').length,
-    ready: assessments.filter(a => a.status === 'ready').length,
+    totalAssessments: total.data().count,
+    inProgress: inProgress.data().count,
+    completed: completed.data().count,
+    ready: ready.data().count,
   };
+}
+
+// Progressive highlight fetch: limit to first N assessments rather than all.
+export async function getRecentAssessments(userId: string, limitCount = 12): Promise<Assessment[]> {
+  const q = query(
+    collection(getDb(), COLLECTION_NAME),
+    where('createdBy', '==', userId),
+    orderBy('createdAt', 'desc'),
+  );
+  const snapshot = await getDocs(q);
+  return snapshot.docs.slice(0, limitCount).map(d => ({ id: d.id, ...d.data() } as Assessment));
 }

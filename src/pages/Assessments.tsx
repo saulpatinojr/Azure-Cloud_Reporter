@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getAssessments } from '../services/assessmentService';
@@ -70,11 +70,7 @@ export default function Assessments() {
   const [priorityFilter, setPriorityFilter] = useState<AssessmentPriority | 'all'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
 
-  useEffect(() => {
-    loadData();
-  }, [user]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       if (user) {
         const [assessmentsData, clientsData] = await Promise.all([
@@ -122,7 +118,11 @@ export default function Assessments() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const filteredAssessments = useMemo(() => {
     return assessments.filter(assessment => {
@@ -251,6 +251,8 @@ export default function Assessments() {
               </div>
               
               <select
+                aria-label="Filter assessments by status"
+                title="Filter assessments by status"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value as Assessment['status'] | 'all')}
                 className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-text focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -265,6 +267,8 @@ export default function Assessments() {
               </select>
               
               <select
+                aria-label="Filter assessments by priority"
+                title="Filter assessments by priority"
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value as AssessmentPriority | 'all')}
                 className="h-10 rounded-lg border border-border bg-surface px-3 text-sm text-text focus:border-primary focus:ring-2 focus:ring-primary/20"
@@ -279,6 +283,8 @@ export default function Assessments() {
             
             <div className="flex items-center gap-2">
               <button
+                aria-label="Grid view"
+                title="Grid view"
                 onClick={() => setViewMode('grid')}
                 className={cn(
                   'p-2 rounded-lg transition-colors',
@@ -290,6 +296,8 @@ export default function Assessments() {
                 <BarChart3 className="h-4 w-4" />
               </button>
               <button
+                aria-label="Table view"
+                title="Table view"
                 onClick={() => setViewMode('table')}
                 className={cn(
                   'p-2 rounded-lg transition-colors',
@@ -317,7 +325,7 @@ export default function Assessments() {
                         <h3 className="font-semibold text-text truncate">{assessment.name}</h3>
                         <p className="text-sm text-text-secondary mt-1">{client?.name || 'Unknown Client'}</p>
                       </div>
-                      <button className="p-1 rounded-lg hover:bg-surface text-text-secondary">
+                      <button className="p-1 rounded-lg hover:bg-surface text-text-secondary" aria-label="More actions" title="More actions">
                         <MoreVertical className="h-4 w-4" />
                       </button>
                     </div>
@@ -336,12 +344,13 @@ export default function Assessments() {
                         <span className="text-text-secondary">Overall Progress</span>
                         <span className="text-text">{assessment.readinessPercentage}%</span>
                       </div>
-                      <div className="w-full bg-surface rounded-full h-2">
-                        <div 
-                          className="bg-primary h-2 rounded-full transition-all duration-300" 
-                          style={{ width: `${assessment.readinessPercentage}%` }}
-                        />
-                      </div>
+                      <progress
+                        className="progress-track"
+                        value={Math.min(100, Math.max(0, Math.round(assessment.readinessPercentage)))}
+                        max={100}
+                        aria-label={`Overall progress ${assessment.readinessPercentage}%`}
+                        title={`Overall progress ${assessment.readinessPercentage}%`}
+                      ></progress>
                     </div>
                     
                     <div className="grid grid-cols-2 gap-4 text-sm">
@@ -364,12 +373,14 @@ export default function Assessments() {
                       </div>
                       <div className="flex gap-2">
                         <button 
+                          aria-label="View assessment"
+                          title="View assessment"
                           onClick={() => handleViewAssessment(assessment.id)}
                           className="p-2 rounded-lg hover:bg-surface text-text-secondary hover:text-text"
                         >
                           <Eye className="h-4 w-4" />
                         </button>
-                        <button className="p-2 rounded-lg hover:bg-surface text-text-secondary hover:text-text">
+                        <button className="p-2 rounded-lg hover:bg-surface text-text-secondary hover:text-text" aria-label="Edit assessment" title="Edit assessment">
                           <Edit className="h-4 w-4" />
                         </button>
                       </div>

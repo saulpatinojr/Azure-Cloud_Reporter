@@ -213,6 +213,8 @@ export default function TemplateBuilder() {
                         <fieldset className="space-y-1">
                           <label className="text-xs font-medium text-slate-600">Label</label>
                           <input
+                            title="Variable label"
+                            placeholder="Variable label"
                             value={variable.label}
                             onChange={(event) => handleVariableChange(activeSection.id, index, 'label', event.target.value)}
                             className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
@@ -221,6 +223,7 @@ export default function TemplateBuilder() {
                         <fieldset className="space-y-1">
                           <label className="text-xs font-medium text-slate-600">Source</label>
                           <select
+                            title="Variable source"
                             value={variable.source ?? 'manual'}
                             onChange={(event) => handleVariableChange(activeSection.id, index, 'source', event.target.value)}
                             className="h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"

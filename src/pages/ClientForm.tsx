@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { createClient, updateClient, getClientById } from '../services/clientService';
@@ -20,13 +20,7 @@ export default function ClientForm() {
 
   const isEditing = !!id;
 
-  useEffect(() => {
-    if (isEditing && id) {
-      loadClient(id);
-    }
-  }, [id]);
-
-  const loadClient = async (clientId: string) => {
+  const loadClient = useCallback(async (clientId: string) => {
     try {
       const client = await getClientById(clientId);
       if (client) {
@@ -42,7 +36,13 @@ export default function ClientForm() {
       alert('Failed to load client');
       navigate('/clients');
     }
-  };
+  }, [navigate]);
+
+  useEffect(() => {
+    if (isEditing && id) {
+      loadClient(id);
+    }
+  }, [isEditing, id, loadClient]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

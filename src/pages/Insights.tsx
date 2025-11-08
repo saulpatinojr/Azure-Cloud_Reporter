@@ -163,6 +163,8 @@ export default function Insights() {
       <select
         value={dateRange}
         onChange={(e) => setDateRange(e.target.value)}
+        aria-label="Select analytics date range"
+        title="Select analytics date range"
         className="h-9 rounded-lg border border-border bg-surface px-3 text-sm text-text"
       >
         <option value="last-30-days">Last 30 Days</option>
@@ -294,7 +296,10 @@ export default function Insights() {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px'
                     }}
-                    formatter={(value: any) => [formatCurrency(value), 'Revenue']}
+                    formatter={(value: unknown) => [
+                      typeof value === 'number' ? formatCurrency(value) : String(value),
+                      'Revenue'
+                    ]}
                   />
                   <Area 
                     type="monotone" 
@@ -366,7 +371,10 @@ export default function Insights() {
                       border: '1px solid hsl(var(--border))',
                       borderRadius: '8px'
                     }}
-                    formatter={(value: any) => [formatCurrency(value), 'Revenue']}
+                    formatter={(value: unknown) => [
+                      typeof value === 'number' ? formatCurrency(value) : String(value),
+                      'Revenue'
+                    ]}
                   />
                   <Legend />
                 </PieChart>
@@ -445,12 +453,13 @@ export default function Insights() {
                     </td>
                     <td className="text-center py-3 px-4">
                       <div className="flex items-center justify-center">
-                        <div className="w-16 bg-surface rounded-full h-2">
-                          <div 
-                            className="bg-primary h-2 rounded-full" 
-                            style={{ width: `${member.utilization}%` }}
-                          />
-                        </div>
+                        <progress
+                          className="progress-track w-16"
+                          value={Math.min(100, Math.max(0, Math.round(member.utilization)))}
+                          max={100}
+                          aria-label={`Utilization ${member.utilization}% for ${member.member}`}
+                          title={`Utilization ${member.utilization}%`}
+                        ></progress>
                         <span className="ml-2 text-text">{member.utilization}%</span>
                       </div>
                     </td>

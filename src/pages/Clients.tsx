@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getClients, deleteClient } from '../services/clientService';
@@ -15,11 +15,7 @@ export default function Clients() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    loadClients();
-  }, [user]);
-
-  const loadClients = async () => {
+  const loadClients = useCallback(async () => {
     if (!user) return;
     try {
       const data = await getClients(user.uid);
@@ -29,7 +25,11 @@ export default function Clients() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadClients();
+  }, [loadClients]);
 
   const handleDelete = async (clientId: string, clientName: string) => {
     if (confirm(`Are you sure you want to delete "${clientName}"? This action cannot be undone.`)) {

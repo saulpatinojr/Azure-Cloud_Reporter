@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import '../../styles/theme.css';
 import { useTheme } from '../../contexts/ThemeContext';
 import { Button } from '../../design-system/components/Button';
 import { Card } from '../../design-system/components/Card';
@@ -18,7 +19,8 @@ function ColorPicker({ label, value, onChange }: ColorPickerProps) {
       <div className="flex items-center space-x-2">
         <div 
           className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 cursor-pointer"
-          style={{ backgroundColor: value }}
+          data-color={value}
+          aria-label={`${label} color preview`}
           onClick={() => {
             const input = document.createElement('input');
             input.type = 'color';
@@ -103,7 +105,7 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
       importTheme(importData);
       setImportData('');
       alert('Theme imported successfully!');
-    } catch (error) {
+    } catch {
       alert('Invalid theme data. Please check the format.');
     }
   };
@@ -133,11 +135,11 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
   ] as const;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl h-5/6 flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" role="dialog" aria-modal="true" aria-labelledby="theme-customizer-title">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl h-5/6 flex flex-col" role="document">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+          <h2 id="theme-customizer-title" className="text-2xl font-bold text-gray-900 dark:text-gray-100">
             Theme Customizer
           </h2>
           <div className="flex items-center space-x-3">
@@ -166,6 +168,7 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
+              aria-label={`Open ${tab.label} settings`}
               className={`px-6 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-blue-500 text-blue-600 dark:text-blue-400'
@@ -244,14 +247,16 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
                   <div className="grid grid-cols-2 gap-4">
                     {Object.entries(theme.typography.fontSize).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+                        <label htmlFor={`font-size-${key}`} className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
                           {key}
                         </label>
                         <input
+                          id={`font-size-${key}`}
                           type="text"
                           value={String(value)}
                           onChange={(e) => handleTypographyChange('fontSize', key, e.target.value)}
                           className="w-20 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          aria-label={`${key} font size`}
                         />
                       </div>
                     ))}
@@ -268,10 +273,11 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
                   <div className="grid grid-cols-2 gap-4">
                     {Object.entries(theme.typography.fontWeight).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+                        <label htmlFor={`font-weight-${key}`} className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
                           {key}
                         </label>
                         <input
+                          id={`font-weight-${key}`}
                           type="number"
                           value={String(value)}
                           onChange={(e) => handleTypographyChange('fontWeight', key, e.target.value)}
@@ -279,6 +285,7 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
                           min="100"
                           max="900"
                           step="100"
+                          aria-label={`${key} font weight`}
                         />
                       </div>
                     ))}
@@ -303,14 +310,16 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
                   <div className="grid grid-cols-2 gap-4">
                     {Object.entries(theme.spacing.borderRadius).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
+                        <label htmlFor={`border-radius-${key}`} className="text-sm font-medium text-gray-700 dark:text-gray-300 capitalize">
                           {key}
                         </label>
                         <input
+                          id={`border-radius-${key}`}
                           type="text"
                           value={String(value)}
                           onChange={(e) => handleSpacingChange('borderRadius', key, e.target.value)}
                           className="w-20 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          aria-label={`${key} border radius`}
                         />
                       </div>
                     ))}
@@ -327,14 +336,16 @@ export function ThemeCustomizer({ onClose }: ThemeCustomizerProps) {
                   <div className="grid grid-cols-2 gap-4">
                     {Object.entries(theme.spacing.spacing).slice(0, 8).map(([key, value]) => (
                       <div key={key} className="flex items-center justify-between">
-                        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                        <label htmlFor={`spacing-${key}`} className="text-sm font-medium text-gray-700 dark:text-gray-300">
                           {key}
                         </label>
                         <input
+                          id={`spacing-${key}`}
                           type="text"
                           value={String(value)}
                           onChange={(e) => handleSpacingChange('spacing', key, e.target.value)}
                           className="w-20 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 rounded bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+                          aria-label={`${key} spacing value`}
                         />
                       </div>
                     ))}
