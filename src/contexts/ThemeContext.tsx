@@ -1,10 +1,10 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useMemo, useCallback } from 'react';
+import { useEffect, useState, ReactNode, useMemo, useCallback } from 'react';
 import { defaultTheme, defaultDarkColors, themePresets } from './themeDefaults';
-import type { ThemeConfig, ThemeContextType } from './themeTypes';
+import type { ThemeConfig, ThemePresetName } from './themeTypes';
 import { mergeTheme, persistTheme, loadInitialTheme } from '../theme/themeLogic';
 
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+import { ThemeContext } from './themeContextBase';
 
 interface ThemeProviderProps {
   children: ReactNode;
@@ -53,7 +53,16 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     clearPreview();
   }, [setTheme, clearPreview]);
 
-  const applyPreset = useCallback((preset: string) => {
+  const applyPreset = useCallback((preset: ThemePresetName) => {
+    if (preset === 'default') {
+      setTheme(defaultTheme);
+      return;
+    }
+    if (preset === 'custom') {
+      // For custom we only mark preset, leaving existing theme values
+      setTheme({ preset: 'custom' });
+      return;
+    }
     if (themePresets[preset]) {
       setTheme({ ...themePresets[preset], preset });
     }
@@ -165,12 +174,3 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 }
 
 // Custom hook to use the theme context
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
-  }
-  return context;
-}
-
-// NOTE: This file now only exports React components/hooks; helper logic lives in ../theme/themeLogic.ts

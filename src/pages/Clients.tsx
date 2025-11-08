@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { getClients, deleteClient } from '../services/clientService';
 import type { Client } from '../types';
 import { formatDate, cn } from '../utils/helpers';

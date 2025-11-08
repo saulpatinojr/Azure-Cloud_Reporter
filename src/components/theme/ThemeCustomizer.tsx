@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import '../../styles/theme.css';
-import { useTheme } from '../../contexts/ThemeContext';
+import { useTheme } from '../../hooks/useTheme';
 import { Button } from '../../design-system/components/Button';
 import { Card } from '../../design-system/components/Card';
 
@@ -17,8 +17,9 @@ function ColorPicker({ label, value, onChange }: ColorPickerProps) {
         {label}
       </label>
       <div className="flex items-center space-x-2">
-        <div 
-          className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 cursor-pointer"
+        <button
+          type="button"
+          className="w-8 h-8 rounded border-2 border-gray-300 dark:border-gray-600 cursor-pointer p-0"
           data-color={value}
           aria-label={`${label} color preview`}
           onClick={() => {

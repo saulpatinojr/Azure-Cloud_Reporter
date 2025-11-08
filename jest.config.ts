@@ -8,6 +8,7 @@ const config: Config = {
     '^react$': require.resolve('react'),
     '^react-dom$': require.resolve('react-dom'),
     '^@/(.*)$': '<rootDir>/src/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   transform: {
