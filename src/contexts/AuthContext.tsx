@@ -1,13 +1,12 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import type { User } from 'firebase/auth';
-import type { AuthContextType } from './authTypes';
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { getAuthSafe } from '../lib/firebase';
 import { ensureAuthInitialized, googleProviderFactory, emailSignIn, passwordReset, performSignOut } from '../auth/authLogic';
 
 // Types moved to authTypes.ts to satisfy react-refresh rule.
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { AuthContext } from './authContextBase';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -50,13 +49,3 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
-export function useAuth() {
-  const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-}
-
-// NOTE: This file now only exports React components/hooks; helper logic lives in ../auth/authLogic.ts

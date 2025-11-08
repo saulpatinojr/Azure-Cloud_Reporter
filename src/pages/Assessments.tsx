@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { getAssessments } from '../services/assessmentService';
 import { getClients } from '../services/clientService';
 import type { Assessment, Client } from '../types';

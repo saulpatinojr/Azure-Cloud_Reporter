@@ -9,5 +9,7 @@ export interface ThemeTypography {
 }
 export interface ThemeSpacing { borderRadius: { sm: string; md: string; lg: string; xl: string; full: string; }; spacing: { xs: string; sm: string; md: string; lg: string; xl: string; '2xl': string; '3xl': string; }; shadows: { sm: string; md: string; lg: string; xl: string; }; }
 export interface BrandingConfig { companyName: string; logo?: { light: string; dark: string; favicon: string; }; colors: ThemeColors; typography: ThemeTypography; spacing: ThemeSpacing; customCss?: string; }
-export interface ThemeConfig extends BrandingConfig { mode: 'light' | 'dark' | 'auto'; preset: 'default' | 'professional' | 'modern' | 'enterprise' | 'custom'; animations: boolean; reducedMotion: boolean; highContrast: boolean; compactMode: boolean; }
-export interface ThemeContextType { theme: ThemeConfig; setTheme: (theme: Partial<ThemeConfig>) => void; toggleDarkMode: () => void; resetToDefaults: () => void; applyPreset: (preset: string) => void; exportTheme: () => string; importTheme: (themeData: string) => void; previewTheme: (previewConfig: Partial<ThemeConfig>) => void; clearPreview: () => void; isPreviewMode: boolean; toggleTheme: () => void; }
+// Explicit preset name union for stronger typing across helpers
+export type ThemePresetName = 'default' | 'professional' | 'modern' | 'enterprise' | 'custom';
+export interface ThemeConfig extends BrandingConfig { mode: 'light' | 'dark' | 'auto'; preset: ThemePresetName; animations: boolean; reducedMotion: boolean; highContrast: boolean; compactMode: boolean; }
+export interface ThemeContextType { theme: ThemeConfig; setTheme: (theme: Partial<ThemeConfig>) => void; toggleDarkMode: () => void; resetToDefaults: () => void; applyPreset: (preset: ThemePresetName) => void; exportTheme: () => string; importTheme: (themeData: string) => void; previewTheme: (previewConfig: Partial<ThemeConfig>) => void; clearPreview: () => void; isPreviewMode: boolean; toggleTheme: () => void; }

@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles/hero.css';
 import { Button } from '../design-system';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { mapFirebaseError } from '../contexts/authUtils';
 import { logAnalyticsEvent } from '../lib/firebase-native';
 import Spinner from './Spinner';

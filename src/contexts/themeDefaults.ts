@@ -1,5 +1,5 @@
 // Extracted theme defaults & presets from ThemeContext for fast-refresh compliance.
-import type { ThemeColors, ThemeTypography, ThemeSpacing, ThemeConfig } from './themeTypes';
+import type { ThemeColors, ThemeTypography, ThemeSpacing, ThemeConfig, ThemePresetName } from './themeTypes';
 
 export const defaultColors: ThemeColors = {
   primary: '220 90% 56%',
@@ -120,7 +120,9 @@ export const defaultTheme: ThemeConfig = {
   compactMode: false
 };
 
-export const themePresets: Record<string, Partial<ThemeConfig>> = {
+// Presets exclude 'default' and 'custom' which are managed outside this map
+type ConcretePreset = Exclude<ThemePresetName, 'default' | 'custom'>;
+export const themePresets: Record<ConcretePreset, Partial<ThemeConfig>> = {
   professional: {
     colors: {
       ...defaultColors,

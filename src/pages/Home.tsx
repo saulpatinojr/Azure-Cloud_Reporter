@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
 import HeroCard from '../components/HeroCard';
 const UploadModal = React.lazy(() => import('../components/UploadModal'));
