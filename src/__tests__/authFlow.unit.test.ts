@@ -5,15 +5,18 @@ jest.mock('../lib/firebase', () => ({
   getAuthSafe: jest.fn(() => ({}))
 }));
 
-const mockSignInWithEmailAndPassword = jest.fn();
-const mockSendPasswordResetEmail = jest.fn();
-const mockSignOut = jest.fn();
-
 jest.mock('firebase/auth', () => ({
-  signInWithEmailAndPassword: mockSignInWithEmailAndPassword,
-  sendPasswordResetEmail: mockSendPasswordResetEmail,
-  signOut: mockSignOut
+  signInWithEmailAndPassword: jest.fn(),
+  sendPasswordResetEmail: jest.fn(),
+  signOut: jest.fn()
 }));
+
+// Import mocked functions for type safety
+import { signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'firebase/auth';
+
+const mockSignIn = jest.mocked(signInWithEmailAndPassword);
+const mockSendReset = jest.mocked(sendPasswordResetEmail);
+const mockSignOut = jest.mocked(signOut);
 
 describe('Auth Flow Helpers', () => {
   beforeEach(() => {
@@ -23,11 +26,11 @@ describe('Auth Flow Helpers', () => {
 
   describe('emailSignIn', () => {
     it('calls signInWithEmailAndPassword with correct parameters', async () => {
-      mockSignInWithEmailAndPassword.mockResolvedValueOnce({ user: { email: 'test@example.com' } });
+      mockSignIn.mockResolvedValueOnce({ user: { email: 'test@example.com' } } as any);
       
       await emailSignIn('test@example.com', 'password123');
       
-      expect(mockSignInWithEmailAndPassword).toHaveBeenCalledWith(
+      expect(mockSignIn).toHaveBeenCalledWith(
         {}, // mocked auth instance
         'test@example.com',
         'password123'
@@ -36,7 +39,7 @@ describe('Auth Flow Helpers', () => {
 
     it('throws error when signInWithEmailAndPassword fails', async () => {
       const error = new Error('Invalid credentials');
-      mockSignInWithEmailAndPassword.mockRejectedValueOnce(error);
+      mockSignIn.mockRejectedValueOnce(error);
       
       await expect(emailSignIn('test@example.com', 'wrongpass')).rejects.toThrow('Invalid credentials');
       expect(console.error).toHaveBeenCalledWith('Error signing in with email:', error);
@@ -45,11 +48,11 @@ describe('Auth Flow Helpers', () => {
 
   describe('passwordReset', () => {
     it('calls sendPasswordResetEmail with correct parameters', async () => {
-      mockSendPasswordResetEmail.mockResolvedValueOnce(undefined);
+      mockSendReset.mockResolvedValueOnce(undefined);
       
       await passwordReset('test@example.com');
       
-      expect(mockSendPasswordResetEmail).toHaveBeenCalledWith(
+      expect(mockSendReset).toHaveBeenCalledWith(
         {}, // mocked auth instance
         'test@example.com'
       );
@@ -57,7 +60,7 @@ describe('Auth Flow Helpers', () => {
 
     it('throws error when sendPasswordResetEmail fails', async () => {
       const error = new Error('User not found');
-      mockSendPasswordResetEmail.mockRejectedValueOnce(error);
+      mockSendReset.mockRejectedValueOnce(error);
       
       await expect(passwordReset('nonexistent@example.com')).rejects.toThrow('User not found');
       expect(console.error).toHaveBeenCalledWith('Error sending password reset email:', error);
